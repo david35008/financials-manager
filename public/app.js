@@ -16,7 +16,7 @@ app.use(morganMiddleware)
 
 const fs = require("fs").promises;
 const rootDirectory = path.resolve(__dirname, '..')
-const filePath = rootDirectory + "/data.json";
+const DBPath = rootDirectory + "/data.json";
 
 const basicContent = { categories: [], shortcuts: [] };
 
@@ -24,21 +24,15 @@ let staticContent;
 
 async function validateDbReady() {
     try {
-        const content = await fs.readFile(filePath);
+        const content = await fs.readFile(DBPath);
         staticContent = JSON.parse(content);
     } catch (err) {
         if (err.code === "ENOENT") {
             staticContent = basicContent;
-            await fs.writeFile(filePath, JSON.stringify(basicContent));
+            await fs.writeFile(DBPath, JSON.stringify(basicContent));
         }
     }
 }
-
-app.get("/api/start", async (req, res) => {
-    await ensureDirSync(rootDirectory);
-    await validateDbReady();
-    res.json(staticContent);
-});
 
 async function ensureDirSync(dirpath) {
     try {
@@ -48,9 +42,11 @@ async function ensureDirSync(dirpath) {
         else console.log(err);
     }
 }
+
 function uniqid() {
     return new Date().valueOf().toString();
 }
+
 function readData(key) {
     if (staticContent) {
         if (key) {
@@ -61,13 +57,15 @@ function readData(key) {
     }
     return [];
 }
+
 async function saveData() {
     try {
-        fs.writeFile(filePath, JSON.stringify(staticContent));
+        fs.writeFile(DBPath, JSON.stringify(staticContent));
     } catch (error) {
         console.log("saveData function-", error);
     }
 }
+
 async function deleteElement(key, id) {
     if (staticContent[key]) {
         const index = staticContent[key].findIndex((element) => element.id === id);
@@ -79,6 +77,7 @@ async function deleteElement(key, id) {
     }
     return false;
 }
+
 async function editElement(key, id, newData) {
     if (staticContent[key]) {
         const index = staticContent[key].findIndex((element) => element.id === id);
@@ -101,6 +100,12 @@ async function AddElement(data, key) {
     }
     await saveData();
 }
+
+app.get("/api/start", async (req, res) => {
+    await ensureDirSync(rootDirectory);
+    await validateDbReady();
+    res.json(staticContent);
+});
 
 app.get("/api/categories", async (req, res) => {
     const categories = readData("categories");
@@ -145,12 +150,14 @@ app.get("/api/shortcuts/:categoryId", async (req, res) => {
     );
     res.json(shortcutsByCategory);
 });
+
 app.post("/api/shortcuts", async (req, res) => {
     const { shortcut, categoryId, description } = req.body;
     const id = uniqid();
     await AddElement({ id, shortcut, categoryId, description }, "shortcuts");
     res.send("added successfully");
 });
+
 app.delete("/api/shortcuts/:id", async (req, res) => {
     const success = await deleteElement("shortcuts", req.params.id);
     if (success) {
@@ -159,6 +166,7 @@ app.delete("/api/shortcuts/:id", async (req, res) => {
         res.send("item not found");
     }
 });
+
 app.put("/api/shortcuts/:id", async (req, res) => {
     const id = req.params.id;
     const { name, shortcut, description } = req.body;
