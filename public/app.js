@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require("express");
 const morgan = require('morgan');
+const { v4: uuid } = require('uuid');
 const app = express();
 app.use(express.json());
 
@@ -61,7 +62,7 @@ async function ensureDirSync(dirpath) {
 }
 
 function uniqId() {
-    const newId = new Date().valueOf().toString();
+    const newId = uuid();
     console.log(`Generating new Id "${newId}"`)
     return newId;
 }
