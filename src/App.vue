@@ -6,14 +6,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import Header from "./components/Header";
 export default {
   name: "App",
   components: { Header },
   async created() {
     try {
-      await axios.get(this.rootURL + "/start");
+      await this.$network.get(this.rootURL + "/start");
     } catch (error) {
       alert('DataBase Error')
       console.error(error);
