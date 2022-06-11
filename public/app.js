@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require("express");
 const app = express();
 app.use(express.json());
@@ -9,15 +10,15 @@ app.use(express.json());
 // app.use(morgan("tiny"));
 
 const fs = require("fs").promises;
-const basePath = "C:/shortcuts";
-const filePath = basePath + "/data.json";
+const rootDirectory = path.resolve(__dirname, '..')
+const filePath = rootDirectory + "/data.json";
 
 const basicContent = { categories: [], shortcuts: [] };
 
 let staticContent;
 
 app.get("/api/start", async (req, res) => {
-    await ensureDirSync(basePath);
+    await ensureDirSync(rootDirectory);
     try {
         const content = await fs.readFile(filePath);
         staticContent = JSON.parse(content);
@@ -33,7 +34,7 @@ async function ensureDirSync(dirpath) {
     try {
         await fs.mkdir(dirpath);
     } catch (err) {
-        if (err.code === "EEXIST") console.log("EXIST Folder");
+        if (err.code === "EEXIST") return;
         else console.log(err);
     }
 }
