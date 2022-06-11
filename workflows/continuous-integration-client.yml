@@ -1,0 +1,41 @@
+name: CI-CLIENT
+
+on: 
+  push:
+    paths:
+      - client/**
+      - .github/workflows/continuous-integration-client.yml
+  pull_request:
+    types:
+      - "opened"
+      - "reopened"
+      - "edited"
+      - "synchronize"
+      - "ready_for_review"
+    paths:
+      - client/**
+      - .github/workflows/continuous-integration-client.yml
+
+defaults:
+  run:
+    working-directory: client
+
+jobs:
+  eslint-application:
+    runs-on: ubuntu-latest
+    name: Eslint Application
+    container:
+      image: node:14-alpine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: v1-npm-deps-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: v1-npm-deps
+      - name: Install client dependencies
+        run: npm i
+      - name: Run Tests
+        run: npm run lint
