@@ -6,10 +6,10 @@ app.use(express.json());
 
 const morganMiddleware = morgan((tokens, req, res) => {
     const myTiny = [tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens.res(req, res, 'content-length'), '-',
-        tokens['response-time'](req, res), 'ms'];
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms'];
     return myTiny.join(' ');
 });
 app.use(morganMiddleware)
@@ -18,23 +18,40 @@ const fs = require("fs").promises;
 const rootDirectory = path.resolve(__dirname, '..')
 const DBPath = rootDirectory + "/data.json";
 
-const basicContent = { categories: [], shortcuts: [] };
+function isNullOrUndefined(value) {
+    return value === undefined || value === null;
+}
 
-let staticContent;
+async function readDb() {
+    console.log('Read DataBase')
+    const content = await fs.readFile(DBPath);
+    return JSON.parse(content);
+}
+
+async function writeDb(jsonContent) {
+    console.log('Write DataBase')
+    const stringContent = JSON.stringify(jsonContent);
+    await fs.writeFile(DBPath, stringContent);
+}
+
+async function initDb() {
+    console.log('Init DataBase')
+    await writeDb({})
+}
 
 async function validateDbReady() {
     try {
-        const content = await fs.readFile(DBPath);
-        staticContent = JSON.parse(content);
+        await readDb()
+        console.log('DataBase is ready to use')
     } catch (err) {
         if (err.code === "ENOENT") {
-            staticContent = basicContent;
-            await fs.writeFile(DBPath, JSON.stringify(basicContent));
+            await initDb()
         }
     }
 }
 
 async function ensureDirSync(dirpath) {
+    console.log(`Validate folder "${dirpath}" exist`)
     try {
         await fs.mkdir(dirpath);
     } catch (err) {
@@ -43,143 +60,118 @@ async function ensureDirSync(dirpath) {
     }
 }
 
-function uniqid() {
-    return new Date().valueOf().toString();
+function uniqId() {
+    const newId = new Date().valueOf().toString();
+    console.log(`Generating new Id "${newId}"`)
+    return newId;
 }
 
-function readData(key) {
-    if (staticContent) {
-        if (key) {
-            return staticContent[key];
-        } else {
-            return staticContent;
-        }
-    }
-    return [];
-}
-
-async function saveData() {
-    try {
-        fs.writeFile(DBPath, JSON.stringify(staticContent));
-    } catch (error) {
-        console.log("saveData function-", error);
-    }
-}
-
-async function deleteElement(key, id) {
-    if (staticContent[key]) {
-        const index = staticContent[key].findIndex((element) => element.id === id);
-        if (index !== -1) {
-            staticContent[key].splice(index, 1);
-            await saveData();
-            return true;
-        }
-    }
-    return false;
-}
-
-async function editElement(key, id, newData) {
-    if (staticContent[key]) {
-        const index = staticContent[key].findIndex((element) => element.id === id);
-        if (index !== -1) {
-            console.log(staticContent[key][index]);
-            console.log(newData);
-            staticContent[key][index] = { ...staticContent[key][index], ...newData };
-            await saveData();
-            return true;
-        }
-    }
-    return false;
-}
-
-async function AddElement(data, key) {
-    if (staticContent[key]) {
-        staticContent[key].push(data);
+async function AddTable(tableName) {
+    const data = await readDb()
+    if (!isNullOrUndefined(data[tableName])) {
+        return false
     } else {
-        staticContent[key] = [data];
+        data[tableName] = {};
     }
-    await saveData();
+    await writeDb(data)
 }
+
+async function getTable(tableName) {
+    const data = await readDb()
+    const tableData = data[tableName];
+    if (isNullOrUndefined(tableData)) return false
+    return tableData
+}
+
+async function getRowFromTable(table, id) {
+    const data = await readDb()
+    if (isNullOrUndefined(data[table])) return false;
+    return data[table][id]
+}
+
+async function AddRowToTable(table, id, newData) {
+    const data = await readDb()
+    if (isNullOrUndefined(data[table])) return false;
+    if (!isNullOrUndefined(data[table][id])) return false;
+    data[table][id] = newData;
+    await writeDb(data)
+    return newData
+}
+
+async function editRowInTable(table, id, newData) {
+    const data = await readDb()
+    if (isNullOrUndefined(data[table])) return false;
+    data[table][id] = newData;
+    await writeDb(data)
+    return newData
+}
+
+async function deleteRoeFromTable(table, id) {
+    const data = await readDb()
+    if (isNullOrUndefined(data[table])) return false;
+    if (isNullOrUndefined(data[table][id])) return false;
+    delete data[table][id]
+    await writeDb(data)
+    return true
+}
+
 
 app.get("/api/start", async (req, res) => {
     await ensureDirSync(rootDirectory);
     await validateDbReady();
-    res.json(staticContent);
+    const data = await readDb()
+    res.json(data);
 });
 
-app.get("/api/categories", async (req, res) => {
-    const categories = readData("categories");
-    res.json(categories);
+app.get("/api/table/:tableName", async (req, res) => {
+    const { tableName } = req.params;
+    const tableData = await getTable(tableName);
+    res.json(tableData);
 });
 
-app.post("/api/categories", async (req, res) => {
-    const { name } = req.body;
-    if (name) {
-        const id = uniqid();
-        await AddElement({ id, name }, "categories");
-        res.send("added successfully");
-    } else {
-        res.send("category name is empty");
+app.post("/api/table", async (req, res) => {
+    const { tableName } = req.body;
+    const tableData = await AddTable(tableName);
+    res.json(tableData);
+});
+
+app.get("/api/item/:tableName/:id", async (req, res) => {
+    const { tableName, id } = req.params;
+    const resp = await getRowFromTable(tableName, id);
+    if (resp) {
+        return res.json(resp);
     }
+    return res.status(400).json({ message: 'Cannot process request' });
 });
 
-app.delete("/api/categories/:id", async (req, res) => {
-    const success = await deleteElement("categories", req.params.id);
-    if (success) {
-        res.send("deleted successfully");
-    } else {
-        res.send("item not found");
+app.post("/api/item/:tableName", async (req, res) => {
+    const { tableName } = req.params;
+    const data = req.body;
+    const id = uniqId();
+    const resp = await AddRowToTable(tableName, id, data);
+    if (resp) {
+        return res.json(resp);
     }
+    return res.status(400).json({ message: 'Cannot process request' });
 });
 
-app.put("/api/categories/:id", async (req, res) => {
-    const id = req.params.id;
-    const { name } = req.body;
-    const success = await editElement("categories", id, { name });
-    if (success) {
-        res.send("edit successfully");
-    } else {
-        res.send("item not found");
+app.put("/api/item/:tableName/:id", async (req, res) => {
+    const { tableName, id } = req.params;
+    const data = req.body;
+    const resp = await editRowInTable(tableName, id, data);
+    if (resp) {
+        return res.json(resp);
     }
+    return res.status(400).json({ message: 'Cannot process request' });
 });
 
-app.get("/api/shortcuts/:categoryId", async (req, res) => {
-    const shortcuts = readData("shortcuts");
-    const shortcutsByCategory = shortcuts.filter(
-        (shortcut) => shortcut.categoryId === req.params.categoryId
-    );
-    res.json(shortcutsByCategory);
-});
-
-app.post("/api/shortcuts", async (req, res) => {
-    const { shortcut, categoryId, description } = req.body;
-    const id = uniqid();
-    await AddElement({ id, shortcut, categoryId, description }, "shortcuts");
-    res.send("added successfully");
-});
-
-app.delete("/api/shortcuts/:id", async (req, res) => {
-    const success = await deleteElement("shortcuts", req.params.id);
-    if (success) {
-        res.send("deleted successfully");
-    } else {
-        res.send("item not found");
+app.delete("/api/item/:tableName/:id", async (req, res) => {
+    const { tableName, id } = req.params;
+    const resp = await deleteRoeFromTable(tableName, id);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
     }
-});
-
-app.put("/api/shortcuts/:id", async (req, res) => {
-    const id = req.params.id;
-    const { name, shortcut, description } = req.body;
-    const success = await editElement(
-        "shortcuts",
-        id,
-        JSON.parse(JSON.stringify({ name, shortcut, description }))
-    );
-    if (success) {
-        res.send("edit successfully");
-    } else {
-        res.send("item not found");
-    }
+    return res.status(400).json({ message: 'Cannot process request' });
 });
 
 module.exports = app;

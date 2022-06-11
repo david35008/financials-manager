@@ -5,6 +5,9 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+import globalMixin from './mixins/globalMixin'
+Vue.mixin(globalMixin);
+
 new Vue({
   vuetify,
   router,
