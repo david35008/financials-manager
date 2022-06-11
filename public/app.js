@@ -6,8 +6,7 @@ app.use(express.json());
 // var cors = require("cors");
 // app.use(cors());
 
-// const morgan = require("morgan");
-// app.use(morgan("tiny"));
+app.use(require('./middleware/morgan'));
 
 const fs = require("fs").promises;
 const rootDirectory = path.resolve(__dirname, '..')
