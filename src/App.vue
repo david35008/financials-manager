@@ -53,7 +53,7 @@ nav {
   height: 100vh;
 }
 .main-router {
-  margin-top: 30vh;
+  margin-top: 40vh;
 }
 .header-title {
   text-transform: uppercase;
