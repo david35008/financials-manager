@@ -2,10 +2,12 @@
   "name": "financials-manager",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:9000/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "dev": "cd public && nodemon server.js",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
@@ -19,6 +21,7 @@
     "element-ui": "^2.15.9",
     "express": "^4.18.1",
     "morgan": "^1.10.0",
+    "nodemon": "^2.0.16",
     "vue": "^2.6.14",
     "vuetify": "^2.6.0"
   },
