@@ -2,7 +2,6 @@
   "name": "financials-manager",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:9000/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -23,6 +22,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.16",
     "vue": "^2.6.14",
+    "vue-router": "^3.5.1",
     "vuetify": "^2.6.0"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "@babel/eslint-parser": "^7.12.16",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "^5.0.4",
     "@vue/cli-service": "~5.0.0",
     "electron": "^12.0.0",
     "electron-devtools-installer": "^3.1.0",
@@ -60,5 +61,6 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "proxy": "http://localhost:9000/"
 }
