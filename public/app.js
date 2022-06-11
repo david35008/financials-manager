@@ -1,12 +1,18 @@
 const path = require('path');
 const express = require("express");
+const morgan = require('morgan');
 const app = express();
 app.use(express.json());
 
-// var cors = require("cors");
-// app.use(cors());
-
-app.use(require('./middleware/morgan'));
+const morganMiddleware = morgan((tokens, req, res) => {
+    const myTiny = [tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms'];
+    return myTiny.join(' ');
+});
+app.use(morganMiddleware)
 
 const fs = require("fs").promises;
 const rootDirectory = path.resolve(__dirname, '..')
@@ -16,8 +22,7 @@ const basicContent = { categories: [], shortcuts: [] };
 
 let staticContent;
 
-app.get("/api/start", async (req, res) => {
-    await ensureDirSync(rootDirectory);
+async function validateDbReady() {
     try {
         const content = await fs.readFile(filePath);
         staticContent = JSON.parse(content);
@@ -27,8 +32,14 @@ app.get("/api/start", async (req, res) => {
             await fs.writeFile(filePath, JSON.stringify(basicContent));
         }
     }
+}
+
+app.get("/api/start", async (req, res) => {
+    await ensureDirSync(rootDirectory);
+    await validateDbReady();
     res.json(staticContent);
 });
+
 async function ensureDirSync(dirpath) {
     try {
         await fs.mkdir(dirpath);
