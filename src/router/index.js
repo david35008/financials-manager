@@ -17,19 +17,18 @@ const routes = [
     path: "/:id",
     component: PageView,
     name: 'Pag View',
-    meta: { isPublic: true, title: "DashBoard2" },
+    meta: { isPublic: true, title: "Page View" },
   },
   {
     path: "*",
     name: "Not Found",
     component: NotFoundPage,
-    meta: { isPublic: true },
+    meta: { isPublic: true, title: "Not Found" },
   },
 ]
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes
 })
 
