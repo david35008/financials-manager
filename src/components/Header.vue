@@ -1,0 +1,107 @@
+<template>
+  <v-card class="overflow-hidden">
+    <v-app-bar
+      absolute
+      color="#6A76AB"
+      dark
+      shrink-on-scroll
+      prominent
+      src="https://picsum.photos/1920/1080?random"
+      fade-img-on-scroll
+      scroll-target="#scrolling-techniques-4"
+    >
+      <template v-slot:img="{ props }">
+        <v-img
+          v-bind="props"
+          gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
+        ></v-img>
+      </template>
+
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Financial Dashboard</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-menu bottom left>
+        <template v-slot:activator="{ on, pages }">
+          <v-btn icon color="yellow" v-bind="pages" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item
+            v-for="(path, name) in pages"
+            :key="'option' + path"
+            @click="goTo(path)"
+          >
+            <v-list-item-title>Page {{ name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <template v-slot:extension>
+        <v-tabs align-with-title>
+          <v-tab
+            v-for="(path, name) in pages"
+            :key="'option' + path"
+            @click="goTo(path)"
+          >
+            {{ name }}</v-tab
+          >
+        </v-tabs>
+      </template>
+    </v-app-bar>
+    <v-sheet id="scrolling-techniques-4" class="overflow-y-auto">
+      <v-container class="main-container">
+        <router-view class="main-router" />
+      </v-container>
+    </v-sheet>
+  </v-card>
+</template>
+
+<script>
+import { routesData } from "../configs/router-config";
+
+export default {
+  name: "Header-Comp",
+  created() {
+    this.pages = routesData;
+    console.log(this.pages);
+  },
+
+  data: () => ({
+    pages: "FFFFFF",
+  }),
+  methods: {
+    async goTo(path) {
+      if (this.$router.history.current.path === path) return;
+      await this.$router.push(path);
+    },
+  },
+};
+</script>
+
+<style >
+.main-container {
+  height: 100vh;
+}
+.main-router {
+  margin-top: 40vh;
+}
+.header-title {
+  text-transform: uppercase;
+}
+.modal-title {
+  text-align: center;
+}
+</style>
