@@ -49,7 +49,7 @@ export default {
       return thaName;
     },
     title() {
-      return `Page ${this.routeName}`;
+      return `${this.routeName} Account`;
     },
   },
   watch: {
@@ -73,12 +73,36 @@ export default {
     },
     async fetchData() {
       try {
-        await this.$network.get(this.rootURL + `/table/${this.routeName}`);
+        const { data } = await this.$network.get(
+          this.rootURL + `/table/${this.routeName}`
+        );
+        const formatedItems = this.formatItems(data);
+        this.itemsData = formatedItems;
+        this.headersData = this.formatHeaders(
+          Object.keys(formatedItems[0] || {})
+        );
+        console.log(this.headersData);
+        console.log(formatedItems);
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
         await this.initTable();
       }
+    },
+    formatItems(itemsDict) {
+      const itemsList = [];
+      for (const [key, value] of Object.entries(itemsDict)) {
+        itemsList.push({ id: key, ...value });
+      }
+      return itemsList;
+    },
+    formatHeaders(names) {
+      return names.map((a) => ({
+        text: a,
+        align: "start",
+        sortable: true,
+        value: a,
+      }));
     },
     reverseDict(dict) {
       const reversed = {};
