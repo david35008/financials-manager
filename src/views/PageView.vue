@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="readyToRender">
     <h1>{{ title }}</h1>
     <v-data-table
       dense
@@ -7,8 +7,9 @@
       :items="itemsData"
       item-key="name"
       class="elevation-1"
-    ></v-data-table>
+    />
   </v-container>
+  <GlobalLoader v-else />
 </template>
 
 <script>
@@ -18,24 +19,8 @@ export default {
   name: "Page-View",
   data: () => ({
     readyToRender: false,
-    itemsData: [
-      {
-        name: "KitKat",
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7,
-        iron: "6%",
-      },
-    ],
-    headersData: [
-      {
-        text: "Dessert (100g serving)",
-        align: "start",
-        sortable: false,
-        value: "name",
-      },
-    ],
+    itemsData: null,
+    headersData: null,
   }),
   async created() {
     await this.fetchData();
@@ -72,6 +57,7 @@ export default {
       }
     },
     async fetchData() {
+      this.resetData();
       try {
         const { data } = await this.$network.get(
           this.rootURL + `/table/${this.routeName}`
@@ -88,6 +74,11 @@ export default {
         console.error(error);
         await this.initTable();
       }
+    },
+    resetData() {
+      this.readyToRender = false;
+      this.itemsData = null;
+      this.headersData = null;
     },
     formatItems(itemsDict) {
       const itemsList = [];
