@@ -91,17 +91,5 @@ export default {
 };
 </script>
 
-<style >
-.main-container {
-  height: 100vh;
-}
-.main-router {
-  margin-top: 40vh;
-}
-.header-title {
-  text-transform: uppercase;
-}
-.modal-title {
-  text-align: center;
-}
+<style scoped>
 </style>

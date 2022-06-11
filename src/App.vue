@@ -49,4 +49,16 @@ nav {
     }
   }
 }
+.main-container {
+  height: 100vh;
+}
+.main-router {
+  margin-top: 30vh;
+}
+.header-title {
+  text-transform: uppercase;
+}
+.modal-title {
+  text-align: center;
+}
 </style>
