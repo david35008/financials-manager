@@ -3,8 +3,8 @@
     <h1>{{ title }}</h1>
     <v-data-table
       dense
-      :headers="headers"
-      :items="desserts"
+      :headers="headersData"
+      :items="itemsData"
       item-key="name"
       class="elevation-1"
     ></v-data-table>
@@ -17,7 +17,8 @@ import { routesData } from "../configs/router-config";
 export default {
   name: "Page-View",
   data: () => ({
-    desserts: [
+    readyToRender: false,
+    itemsData: [
       {
         name: "KitKat",
         calories: 518,
@@ -27,7 +28,7 @@ export default {
         iron: "6%",
       },
     ],
-    headers: [
+    headersData: [
       {
         text: "Dessert (100g serving)",
         align: "start",
@@ -36,20 +37,47 @@ export default {
       },
     ],
   }),
+  async created() {
+    await this.fetchData();
+  },
   computed: {
     routeName() {
       const reveresedConfig = this.reverseDict(routesData);
-      console.log(reveresedConfig);
-      const thaName=reveresedConfig[`/${this.$route.params.id || ''}`];
-      console.log(thaName);
+      const thaName = reveresedConfig[`/${this.$route.params.id}`];
       return thaName;
     },
     title() {
       return `Page ${this.routeName}`;
     },
   },
-
+  watch: {
+    async routeName() {
+      await this.fetchData();
+    },
+  },
   methods: {
+    async initTable() {
+      try {
+        await this.$network.post(this.rootURL + "/table", {
+          tableName: this.routeName,
+        });
+        this.readyToRender = true;
+        return true;
+      } catch (error) {
+        alert("DataBase Error");
+        console.error(error);
+        return false;
+      }
+    },
+    async fetchData() {
+      try {
+        await this.$network.get(this.rootURL + `/table/${this.routeName}`);
+        this.readyToRender = true;
+      } catch (error) {
+        console.error(error);
+        await this.initTable();
+      }
+    },
     reverseDict(dict) {
       const reversed = {};
       for (const [key, value] of Object.entries(dict)) {
