@@ -101,6 +101,7 @@ async function AddRowToTable(table, id, newData) {
 async function editRowInTable(table, id, newData) {
     const data = await readDb()
     if (isNullOrUndefined(data[table])) return false;
+    if (isNullOrUndefined(data[table][id])) return false;
     data[table][id] = newData;
     await writeDb(data)
     return newData
@@ -123,10 +124,18 @@ app.get("/api/start", async (req, res) => {
     res.json(data);
 });
 
+app.get("/api/table", async (req, res) => {
+    const data = await readDb();
+    res.json(data);
+});
+
 app.get("/api/table/:tableName", async (req, res) => {
     const { tableName } = req.params;
     const tableData = await getTable(tableName);
-    res.json(tableData);
+    if (tableData) {
+        return res.json(tableData);
+    }
+    return res.status(404).json({ message: `Table "${tableName}" Not Found` });
 });
 
 app.post("/api/table", async (req, res) => {
@@ -141,7 +150,7 @@ app.get("/api/item/:tableName/:id", async (req, res) => {
     if (resp) {
         return res.json(resp);
     }
-    return res.status(400).json({ message: 'Cannot process request' });
+    return res.status(404).json({ message: `Item "${id}" of table: "${tableName}" Not Found` });
 });
 
 app.post("/api/item/:tableName", async (req, res) => {
@@ -162,7 +171,7 @@ app.put("/api/item/:tableName/:id", async (req, res) => {
     if (resp) {
         return res.json(resp);
     }
-    return res.status(400).json({ message: 'Cannot process request' });
+    return res.status(404).json({ message: `Item "${id}" of table: "${tableName}" Not Found` });
 });
 
 app.delete("/api/item/:tableName/:id", async (req, res) => {
@@ -171,7 +180,7 @@ app.delete("/api/item/:tableName/:id", async (req, res) => {
     if (resp) {
         return res.status(204).send("Delete successfully");
     }
-    return res.status(400).json({ message: 'Cannot process request' });
+    return res.status(404).json({ message: `Item "${id}" of table: "${tableName}" Not Found` });
 });
 
 module.exports = app;
