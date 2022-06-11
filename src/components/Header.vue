@@ -78,9 +78,6 @@ export default {
     readyToRender: false,
     pages: "FFFFFF",
   }),
-  created() {
-    console.log(this.tabelsConfig);
-  },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
     ...mapActions(["setTabelsConfig"]),
