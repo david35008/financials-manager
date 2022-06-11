@@ -1,9 +1,14 @@
 const path = require('path');
 const express = require("express");
+const fs = require("fs").promises;
 const morgan = require('morgan');
 const { v4: uuid } = require('uuid');
+const Cryptr = require('cryptr');
+
 const app = express();
 app.use(express.json());
+
+const cryptr = new Cryptr('b36b1759238bbed767e28d32af4a846ba6f7e94e1f00618b1cd4c6fa8f4812af882822a62a198eebe489');
 
 const morganMiddleware = morgan((tokens, req, res) => {
     const myTiny = [tokens.method(req, res),
@@ -15,9 +20,10 @@ const morganMiddleware = morgan((tokens, req, res) => {
 });
 app.use(morganMiddleware)
 
-const fs = require("fs").promises;
 const rootDirectory = path.resolve(__dirname, '..')
-const DBPath = rootDirectory + "/data.json";
+const isProduction = process.env.NODE_ENV === "production"
+const fileName = isProduction ? "/data.txt" : "/data.json"
+const DBPath = rootDirectory + fileName;
 
 function isNullOrUndefined(value) {
     return value === undefined || value === null;
@@ -25,14 +31,20 @@ function isNullOrUndefined(value) {
 
 async function readDb() {
     console.log('Read DataBase')
-    const content = await fs.readFile(DBPath);
+    let content = await fs.readFile(DBPath);
+    if(isProduction){
+        content = cryptr.decrypt(content);
+    }
     return JSON.parse(content);
 }
 
 async function writeDb(jsonContent) {
     console.log('Write DataBase')
-    const stringContent = JSON.stringify(jsonContent, 0, 2);
-    await fs.writeFile(DBPath, stringContent);
+    let content = JSON.stringify(jsonContent, 0, 2);
+    if(isProduction){
+        content = cryptr.encrypt(content);
+    }
+    await fs.writeFile(DBPath, content);
 }
 
 async function initDb() {
