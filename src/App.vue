@@ -2,8 +2,8 @@
   <div id="app">
     <Header v-if="readyToRender" />
     <v-main>
-      <router-view v-if="readyToRender" />
-      <GlobalLoader v-else />
+      <!-- <router-view v-if="readyToRender" />
+      <GlobalLoader v-else /> -->
     </v-main>
   </div>
 </template>
