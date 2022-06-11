@@ -31,7 +31,7 @@ async function readDb() {
 
 async function writeDb(jsonContent) {
     console.log('Write DataBase')
-    const stringContent = JSON.stringify(jsonContent);
+    const stringContent = JSON.stringify(jsonContent, 0, 2);
     await fs.writeFile(DBPath, stringContent);
 }
 
