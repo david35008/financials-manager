@@ -10,6 +10,8 @@
 
 <script>
 import Header from "./components/Header";
+import { mapActions } from "vuex";
+
 export default {
   name: "App",
   components: { Header },
@@ -17,13 +19,10 @@ export default {
     readyToRender: false,
   }),
   async created() {
-    try {
-      await this.$network.get(this.rootURL + "/start");
-      this.readyToRender = true;
-    } catch (error) {
-      alert("DataBase Error");
-      console.error(error);
-    }
+    await this.fetchTableNames();
+  },
+  methods: {
+    ...mapActions(["setTabelsConfig"]),
   },
 };
 </script>

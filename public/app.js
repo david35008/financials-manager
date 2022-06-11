@@ -143,7 +143,8 @@ app.get("/api/start", async (req, res) => {
     await ensureDirSync(rootDirectory);
     await validateDbReady();
     const data = await readDb()
-    res.json(data);
+    const tablesNames = Object.keys(data)
+    res.json(tablesNames);
 });
 
 app.get("/api/reset-data-base", async (req, res) => {

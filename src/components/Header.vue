@@ -32,15 +32,15 @@
       </v-btn>
 
       <v-menu bottom left>
-        <template v-slot:activator="{ on, pages }">
-          <v-btn icon color="yellow" v-bind="pages" v-on="on">
+        <template v-slot:activator="{ on, tabelsConfig }">
+          <v-btn icon color="yellow" v-bind="tabelsConfig" v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
 
         <v-list>
           <v-list-item
-            v-for="(path, name) in pages"
+            v-for="(path, name) in tabelsConfig"
             :key="'option' + path"
             @click="goTo(path)"
           >
@@ -52,7 +52,7 @@
       <template v-slot:extension>
         <v-tabs align-with-title>
           <v-tab
-            v-for="(path, name) in pages"
+            v-for="(path, name) in tabelsConfig"
             :key="'option' + path"
             @click="goTo(path)"
           >
@@ -70,36 +70,43 @@
 </template>
 
 <script>
-import { routesData } from "../configs/router-config";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Header-Comp",
-  created() {
-    this.pages = routesData;
-    console.log(this.pages);
-  },
-
   data: () => ({
+    readyToRender: false,
     pages: "FFFFFF",
   }),
+  created() {
+    console.log(this.tabelsConfig);
+  },
+  computed: mapGetters(["tabelsConfig"]),
   methods: {
+    ...mapActions(["setTabelsConfig"]),
     async openModalNew() {
       const resp = await prompt("Name");
       try {
         await this.$network.post(this.rootURL + "/table", {
           tableName: resp,
         });
+        await this.fetchTableNames();
       } catch (error) {
         alert("DataBase Error");
         console.error(error);
       }
     },
     async openModalDelete() {
-      const resp = await prompt("You about to delete, entere the desired name:");
-      const confirmed = await confirm(`Are you sure you want to delete table: "${resp}"???!`);
-      if(!confirmed) return
+      const resp = await prompt(
+        "You about to delete, entere the desired name:"
+      );
+      const confirmed = await confirm(
+        `Are you sure you want to delete table: "${resp}"???!`
+      );
+      if (!confirmed) return;
       try {
         await this.$network.delete(this.rootURL + `/table/${resp}`);
+        await this.fetchTableNames();
       } catch (error) {
         alert("DataBase Error");
         console.error(error);

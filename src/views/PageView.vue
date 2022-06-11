@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { routesData } from "../configs/router-config";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Page-View",
@@ -40,9 +40,11 @@ export default {
   async created() {
     await this.fetchData();
   },
+
   computed: {
+    ...mapGetters(["tabelsConfig"]),
     routeName() {
-      const reveresedConfig = this.reverseDict(routesData);
+      const reveresedConfig = this.reverseDict(this.tabelsConfig);
       const thaName = reveresedConfig[`/${this.$route.params.id}`];
       return thaName;
     },
