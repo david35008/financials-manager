@@ -124,6 +124,13 @@ app.get("/api/start", async (req, res) => {
     res.json(data);
 });
 
+app.get("/api/reset-data-base", async (req, res) => {
+    console.log('Resting DataBase')
+    await writeDb({})
+    const data = await readDb()
+    res.json(data);
+});
+
 app.get("/api/table", async (req, res) => {
     const data = await readDb();
     res.json(data);
