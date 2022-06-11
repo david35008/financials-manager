@@ -96,6 +96,15 @@ async function getTable(tableName) {
     return tableData
 }
 
+async function deleteTable(tableName) {
+    const data = await readDb()
+    const tableData = data[tableName];
+    if (isNullOrUndefined(tableData)) return false
+    delete data[tableName]
+    await writeDb(data)
+    return true
+}
+
 async function getRowFromTable(table, id) {
     const data = await readDb()
     if (isNullOrUndefined(data[table])) return false;
@@ -154,6 +163,15 @@ app.get("/api/table/:tableName", async (req, res) => {
     const tableData = await getTable(tableName);
     if (tableData) {
         return res.json(tableData);
+    }
+    return res.status(404).json({ message: `Table "${tableName}" Not Found` });
+});
+
+app.delete("/api/table/:tableName", async (req, res) => {
+    const { tableName } = req.params;
+    const resp = await deleteTable(tableName);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
     }
     return res.status(404).json({ message: `Table "${tableName}" Not Found` });
 });

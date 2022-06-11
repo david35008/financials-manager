@@ -23,11 +23,11 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
+      <v-btn icon @dblclick="openModalDelete">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
 
-      <v-btn icon>
+      <v-btn icon @dblclick="openModalNew">
         <v-icon>mdi-heart</v-icon>
       </v-btn>
 
@@ -83,6 +83,28 @@ export default {
     pages: "FFFFFF",
   }),
   methods: {
+    async openModalNew() {
+      const resp = await prompt("Name");
+      try {
+        await this.$network.post(this.rootURL + "/table", {
+          tableName: resp,
+        });
+      } catch (error) {
+        alert("DataBase Error");
+        console.error(error);
+      }
+    },
+    async openModalDelete() {
+      const resp = await prompt("You about to delete, entere the desired name:");
+      const confirmed = await confirm(`Are you sure you want to delete table: "${resp}"???!`);
+      if(!confirmed) return
+      try {
+        await this.$network.delete(this.rootURL + `/table/${resp}`);
+      } catch (error) {
+        alert("DataBase Error");
+        console.error(error);
+      }
+    },
     async goTo(path) {
       if (this.$router.history.current.path === path) return;
       await this.$router.push(path);
