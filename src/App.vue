@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <Header />
-    <router-view />
+    <Header v-if="readyToRender" />
+    <v-main>
+      <router-view v-if="readyToRender" />
+      <GlobalLoader v-else />
+    </v-main>
   </div>
 </template>
 
@@ -10,14 +13,18 @@ import Header from "./components/Header";
 export default {
   name: "App",
   components: { Header },
+  data: () => ({
+    readyToRender: false,
+  }),
   async created() {
     try {
       await this.$network.get(this.rootURL + "/start");
+      this.readyToRender = true;
     } catch (error) {
-      alert('DataBase Error')
+      alert("DataBase Error");
       console.error(error);
     }
-  }
+  },
 };
 </script>
 
