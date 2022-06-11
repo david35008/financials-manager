@@ -2,9 +2,6 @@ name: CI-CLIENT
 
 on: 
   push:
-    paths:
-      - client/**
-      - .github/workflows/continuous-integration-client.yml
   pull_request:
     types:
       - "opened"
@@ -12,13 +9,6 @@ on:
       - "edited"
       - "synchronize"
       - "ready_for_review"
-    paths:
-      - client/**
-      - .github/workflows/continuous-integration-client.yml
-
-defaults:
-  run:
-    working-directory: client
 
 jobs:
   eslint-application:
