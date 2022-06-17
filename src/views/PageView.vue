@@ -1,12 +1,13 @@
 <template>
   <v-container v-if="readyToRender">
-    <h1>{{ title }}</h1>
-    <v-data-table
-      dense
+    <formDialog :dialog="dialog" @closeModal="dialog = false" />
+    <genericDataTable
+      :title="title"
       :headers="headersData"
-      :items="itemsData"
-      item-key="name"
-      class="elevation-1"
+      :info="itemsData"
+      :insert-dialog="true"
+      :button="{ text: 'add' }"
+      @topButtonClick="addRow"
     />
   </v-container>
   <GlobalLoader v-else />
@@ -14,10 +15,17 @@
 
 <script>
 import { mapGetters } from "vuex";
+import genericDataTable from "../components/generic/genericDataTable.vue";
+import formDialog from "../components/generic/modals/FormDialog.vue";
 
 export default {
   name: "Page-View",
+  components: {
+    genericDataTable,
+     formDialog
+  },
   data: () => ({
+    dialog: false,
     readyToRender: false,
     itemsData: null,
     headersData: null,
@@ -43,6 +51,9 @@ export default {
     },
   },
   methods: {
+    addRow() {
+      this.dialog = true;
+    },
     async initTable() {
       try {
         await this.$network.post(this.rootURL + "/table", {
@@ -67,8 +78,6 @@ export default {
         this.headersData = this.formatHeaders(
           Object.keys(formatedItems[0] || {})
         );
-        console.log(this.headersData);
-        console.log(formatedItems);
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
@@ -88,12 +97,17 @@ export default {
       return itemsList;
     },
     formatHeaders(names) {
-      return names.map((a) => ({
-        text: a,
-        align: "start",
-        sortable: true,
-        value: a,
-      }));
+      return names
+        .map((a) => {
+          if (a == "id") return;
+          return {
+            text: a,
+            align: "start",
+            sortable: true,
+            value: a,
+          };
+        })
+        .filter((a) => !!a);
     },
     reverseDict(dict) {
       const reversed = {};
