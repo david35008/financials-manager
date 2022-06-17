@@ -62,53 +62,39 @@
         </v-tabs>
       </template>
     </v-app-bar>
-    <v-sheet id="scrolling-techniques-4" class="overflow-y-auto">
-      <v-container class="main-container">
-        <router-view class="main-router" />
-      </v-container>
-    </v-sheet>
+    <prompt-modal-add-tab
+      :dialog="dialogCreate"
+      @closeModal="dialogCreate = false"
+    />
+    <prompt-modal-delete-tab
+      :dialog="dialogDelete"
+      @closeModal="dialogDelete = false"
+    />
   </v-card>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import PromptModalAddTab from "./generic/modals/PromptModalAddTab.vue";
+import PromptModalDeleteTab from "./generic/modals/PromptModalDeleteTab.vue";
 
 export default {
+  components: { PromptModalAddTab, PromptModalDeleteTab },
   name: "Header-Comp",
   data: () => ({
     readyToRender: false,
     pages: "FFFFFF",
+    dialogCreate: false,
+    dialogDelete: false,
   }),
   computed: mapGetters(["tabelsConfig"]),
   methods: {
     ...mapActions(["setTabelsConfig"]),
     async openModalNew() {
-      const resp = await prompt("Name");
-      try {
-        await this.$network.post(this.rootURL + "/table", {
-          tableName: resp,
-        });
-        await this.fetchTableNames();
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-      }
+      this.dialogCreate = true;
     },
     async openModalDelete() {
-      const resp = await prompt(
-        "You about to delete, entere the desired name:"
-      );
-      const confirmed = await confirm(
-        `Are you sure you want to delete table: "${resp}"???!`
-      );
-      if (!confirmed) return;
-      try {
-        await this.$network.delete(this.rootURL + `/table/${resp}`);
-        await this.fetchTableNames();
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-      }
+      this.dialogDelete = true;
     },
     async goTo(path) {
       if (this.$router.history.current.path === path) return;
