@@ -6,6 +6,8 @@ import NotFoundPage from '../views/404.vue'
 
 Vue.use(VueRouter)
 
+const DEFAULT_TITLE = 'Financials Manager'
+
 const routes = [
   {
     path: '/',
@@ -32,5 +34,16 @@ const router = new VueRouter({
   routes
 })
 
+router.afterEach((to) => {
+  // Use next tick to handle router history correctly
+  // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
+  Vue.nextTick(() => {
+    const routeParam = to.params.id;
+    const param = routeParam ? " #" + routeParam : "";
+    const metaTitle = to.meta ? to.meta.title : undefined;
+    const title = metaTitle;
+    document.title = DEFAULT_TITLE + "  |  " + title + param;
+  });
+});
 
 export default router
