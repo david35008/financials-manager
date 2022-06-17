@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <div id="app" data-app>
     <Header v-if="readyToRender" />
     <v-main>
-      <!-- <router-view v-if="readyToRender" />
-      <GlobalLoader v-else /> -->
+      <router-view v-if="readyToRender" />
+      <GlobalLoader v-else />
     </v-main>
   </div>
 </template>
