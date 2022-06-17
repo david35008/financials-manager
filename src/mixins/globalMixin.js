@@ -4,7 +4,7 @@ export default {
     components: { GlobalLoader },
     data() {
         return {
-            rootURL: "/api",
+            rootURL: "http://localhost:9000/api",
         }
     },
     methods: {
