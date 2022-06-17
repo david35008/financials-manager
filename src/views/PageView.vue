@@ -2,7 +2,7 @@
   <v-container v-if="readyToRender">
     <formDialog :dialog="dialog" @closeModal="dialog = false" />
     <genericDataTable
-      :title="title"
+      :tableTitle="title"
       :headers="headersData"
       :info="itemsData"
       :insert-dialog="true"
@@ -22,7 +22,7 @@ export default {
   name: "Page-View",
   components: {
     genericDataTable,
-     formDialog
+    formDialog,
   },
   data: () => ({
     dialog: false,
@@ -33,18 +33,7 @@ export default {
   async created() {
     await this.fetchData();
   },
-
-  computed: {
-    ...mapGetters(["tabelsConfig"]),
-    routeName() {
-      const reveresedConfig = this.reverseDict(this.tabelsConfig);
-      const thaName = reveresedConfig[`/${this.$route.params.id}`];
-      return thaName;
-    },
-    title() {
-      return `${this.routeName} Account`;
-    },
-  },
+  computed: mapGetters(["tabelsConfig"]),
   watch: {
     async routeName() {
       await this.fetchData();
@@ -108,13 +97,6 @@ export default {
           };
         })
         .filter((a) => !!a);
-    },
-    reverseDict(dict) {
-      const reversed = {};
-      for (const [key, value] of Object.entries(dict)) {
-        reversed[value] = key;
-      }
-      return reversed;
     },
   },
 };

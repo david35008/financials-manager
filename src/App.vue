@@ -60,4 +60,7 @@ nav {
 .modal-title {
   text-align: center;
 }
+.cardTitleContainer {
+  justify-content: center;
+}
 </style>

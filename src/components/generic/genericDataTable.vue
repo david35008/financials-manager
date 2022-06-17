@@ -8,10 +8,10 @@
     :sort-desc="reverseSort"
     :items-per-page="computedDisplayAll"
   >
-    <template v-if="title || ifToSearch || button" #top>
+    <template v-if="tableTitle || ifToSearch || button" #top>
       <v-toolbar flat>
-        <template v-if="title">
-          <v-toolbar-title>{{ title }}</v-toolbar-title>
+        <template v-if="tableTitle">
+          <v-toolbar-title>{{ tableTitle }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
         </template>
         <v-spacer></v-spacer>
@@ -357,7 +357,7 @@ export default Vue.extend({
   props: {
     headers: { type: Array, required: true },
     info: { type: Array, required: true },
-    title: { type: String, required: false, default: null },
+    tableTitle: { type: String, required: false, default: null },
     insertDialog: { type: Boolean, required: false },
     ifToSearch: { type: Boolean, required: false },
     button: { type: Object, required: false, default: null },
