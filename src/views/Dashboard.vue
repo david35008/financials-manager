@@ -1,4 +1,6 @@
 <template>
+ <v-container>
+ <h1>Main Dashboard</h1>
   <v-data-table
     dense
     :headers="headers"
@@ -6,6 +8,7 @@
     item-key="name"
     class="elevation-1"
   ></v-data-table>
+ </v-container>
 </template>
 
 <script>
