@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog :value="dialog" width="500">
       <v-card>
         <v-card-title class="text-h5 grey lighten-2"> Delete Tab </v-card-title>
         <v-card-text>
@@ -34,7 +34,6 @@ export default {
         return false;
       },
     },
-    url: { type: String, required: true },
   },
   data() {
     return {
@@ -49,6 +48,9 @@ export default {
       this.$emit("closeModal");
     },
     async submit() {
+      if (!this.tabToDelete) {
+        return this.$emit("closeModal");
+      }
       try {
         await this.$network.delete(this.rootURL + `/table/${this.tabToDelete}`);
         await this.fetchTableNames();

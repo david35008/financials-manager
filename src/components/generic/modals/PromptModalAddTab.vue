@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog :value="dialog" width="500">
       <v-card>
         <v-card-title class="text-h5 grey lighten-2">
           Add New Tab
@@ -50,6 +50,9 @@ export default {
       this.$emit("closeModal");
     },
     async submit() {
+      if (!this.newTabName) {
+        return this.$emit("closeModal");
+      }
       try {
         await this.$network.post(this.rootURL + "/table", {
           tableName: this.newTabName,
