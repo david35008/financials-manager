@@ -25,11 +25,11 @@
       <v-spacer></v-spacer>
 
       <v-btn icon @dblclick="openModalDelete">
-        <v-icon>mdi-magnify</v-icon>
+        <v-icon>mdi-delete-alert</v-icon>
       </v-btn>
 
       <v-btn icon @dblclick="openModalNew">
-        <v-icon>mdi-heart</v-icon>
+        <v-icon>mdi-folder-plus-outline</v-icon>
       </v-btn>
 
       <v-menu bottom left>
