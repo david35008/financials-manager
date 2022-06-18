@@ -54,8 +54,8 @@ export default {
         return this.$emit("closeModal");
       }
       try {
-        await this.$network.post(this.rootURL + "/table", {
-          tableName: this.newTabName,
+        await this.$network.post(this.rootURL + "/institute", {
+          instituteName: this.newTabName,
         });
         await this.fetchTableNames();
       } catch (error) {

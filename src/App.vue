@@ -19,6 +19,11 @@ export default {
     readyToRender: false,
   }),
   async created() {
+    try{
+      await this.$network.get(this.rootURL + "/start");
+    } catch(error){
+      alert('Init System Error')
+    }
     await this.fetchTableNames();
   },
   methods: {
@@ -62,5 +67,9 @@ nav {
 }
 .cardTitleContainer {
   justify-content: center;
+}
+
+.container {
+  margin-top: 10px;
 }
 </style>

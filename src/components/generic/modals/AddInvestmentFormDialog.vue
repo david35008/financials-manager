@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" v-if="readyToRender">
     <v-dialog :value="dialog" persistent max-width="400px">
       <v-form
         ref="form"
@@ -15,21 +15,24 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-text-field
+                  <v-select
                     reverse
+                    :items="investors"
                     label="שם בעל החשבון"
                     hint="שם האדם שההשקעה על שמו"
-                    v-model="investorName"
+                    no-data-text="לא קיימים בעלי חשבון במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="investorId"
                     required
                     :rules="required"
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col>
                   <v-select
                     reverse
-                    :items="investMentypes"
+                    :items="investMentypesOptions"
                     label="סוג ההשקעה"
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="investmentType"
@@ -67,6 +70,7 @@
       </v-form>
     </v-dialog>
   </v-row>
+  <GlobalLoader v-else />
 </template>
 
 <script>
@@ -81,8 +85,12 @@ export default {
       },
     },
   },
+  async created() {
+    await this.fetchData();
+  },
   data() {
     return {
+      readyToRender: false,
       required: [
         (v) => {
           const text = "שדה חובה";
@@ -90,28 +98,51 @@ export default {
           return true;
         },
       ],
-      investorName: "",
+      investorId: null,
       investmentAmount: 0,
       investmentType: null,
       valid: false,
-      investMentypes: [
-        { text: "קרן פנסיה", value: "pension" },
-        { text: "ביטוח מנהלים", value: "manager_insurance" },
-        { text: "קופת גמל פנסיונית", value: "pension_provident_fund" },
-        { text: "קופת גמל להשקעה", value: "invest_provident_fund" },
-      ],
+      investorsOptions: [],
+      investMentypesOptions: [],
     };
   },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
+    async fetchData() {
+      await this.fetchInvestors();
+      await this.fetchinvestMentypes();
+    },
+    async fetchInvestors() {
+      try {
+        const { data } = await this.$network.get(this.rootURL + "/investor");
+        this.investors = this.dictToOptions(data);
+        this.readyToRender = true;
+      } catch (error) {
+        alert("DataBase Error");
+        console.error(error);
+      }
+    },
+    async fetchinvestMentypes() {
+      try {
+        const { data } = await this.$network.get(
+          this.rootURL + "/investments-type"
+        );
+        this.investMentypesOptions = this.dictToOptions(data);
+        this.readyToRender = true;
+      } catch (error) {
+        alert("DataBase Error");
+        console.error(error);
+      }
+    },
     async handleSubmit() {
       this.$refs.form.validate();
       if (!this.valid) return;
       try {
-        await this.$network.post(this.rootURL + `/item/${this.routeName}`, {
-          investorName: this.investorName,
-          investmentAmount: this.investmentAmount,
-          investmentType: this.investmentType,
+        await this.$network.post(this.rootURL + `/investments`, {
+          institute: this.$route.params.id,
+          investor: this.investorId,
+          investments_type: this.investmentType,
+          amount: this.investmentAmount,
         });
         this.$emit("closeModal");
       } catch (error) {

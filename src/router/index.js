@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
 import PageView from '../views/PageView.vue'
+import ManageView from '../views/ManegeView.vue'
 import NotFoundPage from '../views/404.vue'
 
 Vue.use(VueRouter)
@@ -14,6 +15,26 @@ const routes = [
     name: 'Home',
     component: Dashboard,
     meta: { isPublic: true, title: "DashBoard" },
+  },
+  {
+    path: '/0',
+    name: 'Home',
+    component: Dashboard,
+    meta: { isPublic: true, title: "DashBoard" },
+  },
+  {
+    path: '/manageInvestors',
+    name: 'Manage Investors',
+    props: { managetitle: "משקיע", apiRoute: "investor" },
+    component: ManageView,
+    meta: { isPublic: true, title: "Manage Investors" },
+  },
+  {
+    path: '/manageInvestmentTypes',
+    name: 'Manage Investment',
+    props: { managetitle: "סוגי השקעה", apiRoute: "investments-type" },
+    component: ManageView,
+    meta: { isPublic: true, title: "Manage Investors" },
   },
   {
     path: "/:id",

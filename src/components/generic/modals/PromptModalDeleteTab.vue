@@ -4,11 +4,11 @@
       <v-card>
         <v-card-title class="text-h5 grey lighten-2"> Delete Tab </v-card-title>
         <v-card-text>
-          <v-text-field
+          <v-select
+            :items="institutes"
+            :menu-props="{ bottom: true, offsetY: true }"
             v-model="tabToDelete"
-            label="Tab To Delete"
-            required
-          ></v-text-field>
+          />
         </v-card-text>
 
         <v-divider></v-divider>
@@ -37,8 +37,14 @@ export default {
   },
   data() {
     return {
+      institutes: [],
       tabToDelete: "",
     };
+  },
+  created() {
+    this.institutes = this.dictToOptions(this.tabelsConfig).filter(
+      (a) => a.value != 0
+    );
   },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
@@ -52,7 +58,9 @@ export default {
         return this.$emit("closeModal");
       }
       try {
-        await this.$network.delete(this.rootURL + `/table/${this.tabToDelete}`);
+        await this.$network.delete(
+          this.rootURL + `/institute/${this.tabToDelete}`
+        );
         await this.fetchTableNames();
       } catch (error) {
         alert("DataBase Error");

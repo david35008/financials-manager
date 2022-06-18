@@ -41,11 +41,11 @@
 
         <v-list>
           <v-list-item
-            v-for="(path, name) in tabelsConfig"
+            v-for="(path, name) in managePages"
             :key="'option' + path"
             @click="goTo(path)"
           >
-            <v-list-item-title>Page {{ name }}</v-list-item-title>
+            <v-list-item-title>{{ name }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -53,11 +53,11 @@
       <template v-slot:extension>
         <v-tabs align-with-title>
           <v-tab
-            v-for="(path, name) in tabelsConfig"
+            v-for="(dict, path) in tabelsConfig"
             :key="'option' + path"
             @click="goTo(path)"
           >
-            {{ name }}</v-tab
+            {{ dict.name }}</v-tab
           >
         </v-tabs>
       </template>
@@ -84,6 +84,10 @@ export default {
   data: () => ({
     readyToRender: false,
     pages: "FFFFFF",
+    managePages: {
+      "ניהול משקיעים": "manageInvestors",
+      "ניהול סוגי השקעה": "manageInvestmentTypes",
+    },
     dialogCreate: false,
     dialogDelete: false,
   }),

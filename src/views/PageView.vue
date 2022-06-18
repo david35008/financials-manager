@@ -1,8 +1,10 @@
 <template>
-  <v-container v-if="readyToRender">
-    <formDialog :dialog="dialog" @closeModal="dialog = false" />
+  <v-container class="container" v-if="readyToRender">
+    <formDialog :dialog="dialog" @closeModal="refreshData" />
+    <v-divider />
+    <v-spacer />
+    <h1>{{ title }}</h1>
     <genericDataTable
-      :tableTitle="title"
       :headers="headersData"
       :info="itemsData"
       :insert-dialog="true"
@@ -16,7 +18,7 @@
 <script>
 import { mapGetters } from "vuex";
 import genericDataTable from "../components/generic/genericDataTable.vue";
-import formDialog from "../components/generic/modals/FormDialog.vue";
+import formDialog from "../components/generic/modals/AddInvestmentFormDialog.vue";
 
 export default {
   name: "Page-View",
@@ -35,7 +37,7 @@ export default {
   },
   computed: mapGetters(["tabelsConfig"]),
   watch: {
-    async routeName() {
+    "$route.params": async function () {
       await this.fetchData();
     },
   },
@@ -43,24 +45,15 @@ export default {
     addRow() {
       this.dialog = true;
     },
-    async initTable() {
-      try {
-        await this.$network.post(this.rootURL + "/table", {
-          tableName: this.routeName,
-        });
-        this.readyToRender = true;
-        return true;
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-        return false;
-      }
+    async refreshData() {
+      await this.fetchData();
+      this.dialog = false;
     },
     async fetchData() {
       this.resetData();
       try {
         const { data } = await this.$network.get(
-          this.rootURL + `/table/${this.routeName}`
+          this.rootURL + `/investment/by-institute/${this.$route.params.id}`
         );
         const formatedItems = this.formatItems(data);
         this.itemsData = formatedItems;
@@ -70,7 +63,6 @@ export default {
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
-        await this.initTable();
       }
     },
     resetData() {

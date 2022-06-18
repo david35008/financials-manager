@@ -9,23 +9,17 @@ export default {
   },
   computed: {
     routeName() {
-      const reveresedConfig = this.reverseDict(this.tabelsConfig);
-      const thaName = reveresedConfig[`/${this.$route.params.id}`];
-      return thaName;
+      return this.tabelsConfig[this.$route.params.id].name;
     },
     title() {
-      return `${this.routeName} Account`;
+      return `ההשקעות ב${this.routeName}`;
     },
   },
   methods: {
     async fetchTableNames() {
       try {
-        const { data } = await this.$network.get(this.rootURL + "/start");
-        const tablesNames = { All: "/" };
-        data.forEach((a, i) => {
-          tablesNames[a] = `/${i}`;
-        });
-        this.setTabelsConfig(tablesNames);
+        const { data } = await this.$network.get(this.rootURL + "/institute");
+        this.setTabelsConfig({ ...data, 0: { name: "All" } });
         this.readyToRender = true;
       } catch (error) {
         alert("DataBase Error");
@@ -42,5 +36,19 @@ export default {
       }
       return reversed;
     },
+    dictToList(dict) {
+      const list = []
+      for (const [key, value] of Object.entries(dict)) {
+        list.push({ id: key, ...value })
+      }
+      return list
+    },
+    dictToOptions(dict) {
+      const list = []
+      for (const [key, value] of Object.entries(dict)) {
+        list.push({ value: key, text: value.name })
+      }
+      return list
+    }
   }
 };
