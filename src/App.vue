@@ -1,11 +1,11 @@
 <template>
-  <div id="app" data-app>
+  <v-app>
     <Header v-if="readyToRender" />
     <v-main>
       <router-view v-if="readyToRender" />
       <GlobalLoader v-else />
     </v-main>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -19,10 +19,10 @@ export default {
     readyToRender: false,
   }),
   async created() {
-    try{
+    try {
       await this.$network.get(this.rootURL + "/start");
-    } catch(error){
-      alert('Init System Error')
+    } catch (error) {
+      alert("Init System Error");
     }
     await this.fetchTableNames();
   },

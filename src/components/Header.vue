@@ -2,7 +2,6 @@
   <v-card class="overflow-hidden">
     <v-app-bar
       app
-      absolute
       color="#6A76AB"
       dark
       shrink-on-scroll
@@ -20,7 +19,7 @@
 
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Financial Dashboard</v-toolbar-title>
+       <v-toolbar-title class="header-title">ריכוז השקעות</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -51,10 +50,11 @@
       </v-menu>
 
       <template v-slot:extension>
-        <v-tabs align-with-title>
+        <v-tabs right>
           <v-tab
             v-for="(dict, path) in tabelsConfig"
-            :key="'option' + path"
+            :key="'tab' + path"
+            :id="'tab' + path"
             @click="goTo(path)"
           >
             {{ dict.name }}</v-tab
@@ -109,4 +109,8 @@ export default {
 </script>
 
 <style scoped>
+.header-title {
+  width: 100%;
+  text-align: right;
+}
 </style>
