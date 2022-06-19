@@ -303,21 +303,46 @@ app.delete("/api/investments-type/:id", async (req, res) => {
 
 // -------------- investments ------------------------
 
+async function fetchRelated(obj) {
+    if (obj.institute) {
+        const instituteObj = await GetEntry(INSTITUTES, obj.institute)
+        obj['institute_name'] = instituteObj.name
+    }
+    if (obj.investor) {
+        const investorObj = await GetEntry(INVESTORS, obj.investor)
+        obj['investor_name'] = investorObj.name
+    }
+    if (obj.investments_type) {
+        const investmentsTypeObj = await GetEntry(INVESTMENTS_TYPES, obj.investments_type)
+        obj['investments_type_name'] = investmentsTypeObj.name
+    }
+    return obj
+}
+
 app.get("/api/investment/by-institute/:instituteId", async (req, res) => {
     const { instituteId } = req.params;
     const instituteData = await getInstituteInvestments(instituteId);
+    for (let i = 0; i < instituteData.length; i++) {
+        await fetchRelated(instituteData[i]);
+    }
     return res.json(instituteData);
 });
 
 app.get("/api/investment/by-investor/:investorId", async (req, res) => {
     const { investorId } = req.params;
     const investorData = await getInvestorInvestments(investorId);
+    for (let i = 0; i < investorData.length; i++) {
+        await fetchRelated(investorData[i]);
+    }
     return res.json(investorData);
 });
 
 app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, res) => {
     const { investmentsTypeId } = req.params;
     const investmentsTypeData = await getInvestmentsTypeInvestments(investmentsTypeId);
+    for (let i = 0; i < investmentsTypeData.length; i++) {
+        await fetchRelated(investmentsTypeData[i]);
+    }
     return res.json(investmentsTypeData);
 });
 

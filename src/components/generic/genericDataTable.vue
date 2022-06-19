@@ -106,7 +106,7 @@
               dark
               class="table-chip"
             >
-              {{ getValue(item, header.value) }}
+              {{ getValue(item, header.value) }}{{ header.suffix }}
             </v-chip>
           </template>
 
@@ -249,7 +249,7 @@
             <span
               class="hl-link-table"
               @click="doAction(item, header.eventName || 'linkClicked')"
-              >{{ getValue(item, header.value) }}</span
+              >{{ getValue(item, header.value) }}{{ header.suffix }}</span
             >
           </template>
 
@@ -321,8 +321,13 @@
           </template>
 
           <!-- regular display -->
+          <template v-else-if="header.type == 'money'">
+            {{ getValue(item, header.value) | currency }}
+          </template>
+
+          <!-- regular display -->
           <template v-else>
-            {{ getValue(item, header.value) }}
+            {{ getValue(item, header.value) }}{{ header.suffix }}
           </template>
         </td>
       </tr>

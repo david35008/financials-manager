@@ -6,6 +6,17 @@ import './prototypes/globalPrototype'
 
 import { ModalService } from "./services/modal.service";
 
+import VueCurrencyFilter from "vue-currency-filter";
+
+Vue.use(VueCurrencyFilter, {
+  symbol: "₪",
+  thousandsSeparator: ",",
+  fractionCount: 0,
+  fractionSeparator: ",",
+  symbolPosition: "front",
+  symbolSpacing: false,
+});
+
 Vue.prototype.$ModalService = ModalService;
 
 Vue.config.productionTip = false

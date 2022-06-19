@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
-import PageView from '../views/PageView.vue'
+import InvestmentInstitutePageView from '../views/InvestmentInstitutePageView.vue'
 import ManageView from '../views/ManegeView.vue'
 import NotFoundPage from '../views/404.vue'
 
@@ -38,9 +38,9 @@ const routes = [
   },
   {
     path: "/:id",
-    component: PageView,
-    name: 'Pag View',
-    meta: { isPublic: true, title: "Page View" },
+    component: InvestmentInstitutePageView,
+    name: 'Investment Institute',
+    meta: { isPublic: true, title: "Investment Institute" },
   },
   {
     path: "*",

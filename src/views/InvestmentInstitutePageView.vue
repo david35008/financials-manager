@@ -5,10 +5,10 @@
     <v-spacer />
     <h1>{{ title }}</h1>
     <genericDataTable
-      :headers="headersData"
+      :headers="headers"
       :info="itemsData"
       :insert-dialog="true"
-      :button="{ text: 'add' }"
+      :button="{ text: 'הוסף השקעה' }"
       @topButtonClick="addRow"
     />
   </v-container>
@@ -31,6 +31,35 @@ export default {
     readyToRender: false,
     itemsData: null,
     headersData: null,
+    headers: [
+      {
+        text: "שם בעל ההשקעה",
+        value: "investor_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        text: "בית ההשקעות",
+        value: "institute_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        text: "סוג ההשקעה",
+        value: "investments_type_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        text: "סכום",
+        value: "amount",
+        align: "left",
+        sortable: false,
+        suffix: "₪",
+        type: 'money'
+      },
+      // { text: "Actions", value: "actions", align: "left", sortable: false },
+    ],
   }),
   async created() {
     await this.fetchData();
