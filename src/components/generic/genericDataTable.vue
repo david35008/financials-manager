@@ -66,7 +66,11 @@
         <td
           v-for="(header, index) in headers"
           :key="header.text || index"
-          :class="{ bold: header.bold, 'no-break': header.noBreak }"
+          :class="{ bold: header.bold, 'no-break': header.noBreak, 
+          'align-left': header.align == 'left',
+          'align-right': header.align == 'right',
+          'align-center': header.align == 'center',
+          }"
         >
           <!-- if we want checkbox in the some column we need to add checkbox:true prop -->
           <template v-if="header.checkbox">
@@ -320,7 +324,7 @@
             <v-icon color="red darken-2"> cancel </v-icon>
           </template>
 
-          <!-- regular display -->
+          <!-- money display -->
           <template v-else-if="header.type == 'money'">
             {{ getValue(item, header.value) | currency }}
           </template>
@@ -447,6 +451,15 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.align-left {
+  text-align: left;
+}
+.align-right {
+  text-align: right;
+}
+.align-center {
+  text-align: center;
+}
 .elevation-5 {
   margin: 20px 0px;
 }

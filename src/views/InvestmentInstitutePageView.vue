@@ -58,7 +58,6 @@ export default {
         suffix: "₪",
         type: 'money'
       },
-      // { text: "Actions", value: "actions", align: "left", sortable: false },
     ],
   }),
   async created() {
