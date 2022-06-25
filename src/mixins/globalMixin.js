@@ -49,6 +49,17 @@ export default {
         list.push({ value: key, text: value.name })
       }
       return list
-    }
+    },
+    formatItems(itemsDict) {
+      const itemsList = [];
+      for (const [key, value] of Object.entries(itemsDict)) {
+        itemsList.push({ id: key, ...value });
+      }
+      return itemsList;
+    },
+    resetData() {
+      this.readyToRender = false;
+      this.itemsData = null;
+    },
   }
 };

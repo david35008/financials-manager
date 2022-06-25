@@ -1,26 +1,45 @@
 <template>
- <v-container>
+ <v-container v-if="readyToRender">
  <h1>סה"כ השקעות</h1>
-  <v-data-table
-    dense
-    :headers="headers"
-    :items="items"
-    item-key="name"
-    class="elevation-1"
-  ></v-data-table>
+   <InvestmentTable :items-data="itemsData"/>
  </v-container>
 </template>
 
 <script>
+import InvestmentTable from "@/views/InvestmentTable";
+import {mapGetters} from "vuex";
 
 export default {
   name: "DashBoard-Page",
+  components: {
+    InvestmentTable,
+  },
+  async created() {
+    await this.fetchData();
+  },
+  watch: {
+    "$route.params": async function () {
+      await this.fetchData();
+    },
+  },
+  computed: mapGetters(["tabelsConfig"]),
   data: () => ({
-    items: [],
-    headers: [],
+    itemsData: [],
+    readyToRender: false,
   }),
-  computed: {},
-  methods: {},
+  methods: {
+    async fetchData() {
+      this.resetData();
+      try {
+        const { data } = await this.$network.get(this.rootURL + `/investment/`);
+        const formatedItems = this.formatItems(data);
+        this.itemsData = formatedItems;
+        this.readyToRender = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
 };
 </script>
 

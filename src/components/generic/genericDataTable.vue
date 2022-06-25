@@ -28,7 +28,7 @@
             style="max-width: 300px"
           ></v-text-field>
         </template>
-        <template v-if="button">
+        <template v-if="button && button.text">
           <template v-if="button.href">
             <router-link :to="button.href">
               <v-btn

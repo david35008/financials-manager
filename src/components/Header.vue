@@ -62,14 +62,14 @@
         </v-tabs>
       </template>
     </v-app-bar>
-    <prompt-modal-add-tab
+    <!-- <prompt-modal-add-tab
       :dialog="dialogCreate"
       @closeModal="dialogCreate = false"
     />
     <prompt-modal-delete-tab
       :dialog="dialogDelete"
       @closeModal="dialogDelete = false"
-    />
+    /> -->
   </v-card>
 </template>
 

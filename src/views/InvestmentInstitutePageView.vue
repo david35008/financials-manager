@@ -4,60 +4,26 @@
     <v-divider />
     <v-spacer />
     <h1>{{ title }}</h1>
-    <genericDataTable
-      :headers="headers"
-      :info="itemsData"
-      :insert-dialog="true"
-      :button="{ text: 'הוסף השקעה' }"
-      @topButtonClick="addRow"
-    />
+    <InvestmentTable :add-row="addRow" :items-data="itemsData"/>
   </v-container>
   <GlobalLoader v-else />
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import genericDataTable from "../components/generic/genericDataTable.vue";
+import {mapGetters} from "vuex";
 import formDialog from "../components/generic/modals/AddInvestmentFormDialog.vue";
+import InvestmentTable from "@/views/InvestmentTable";
 
 export default {
   name: "Page-View",
   components: {
-    genericDataTable,
+    InvestmentTable,
     formDialog,
   },
   data: () => ({
     dialog: false,
     readyToRender: false,
     itemsData: null,
-    headers: [
-      {
-        text: "שם בעל ההשקעה",
-        value: "investor_name",
-        align: "left",
-        sortable: true,
-      },
-      {
-        text: "בית ההשקעות",
-        value: "institute_name",
-        align: "left",
-        sortable: true,
-      },
-      {
-        text: "סוג ההשקעה",
-        value: "investments_type_name",
-        align: "left",
-        sortable: true,
-      },
-      {
-        text: "סכום",
-        value: "amount",
-        align: "left",
-        sortable: false,
-        suffix: "₪",
-        type: 'money'
-      },
-    ],
   }),
   async created() {
     await this.fetchData();
@@ -89,33 +55,7 @@ export default {
         console.error(error);
       }
     },
-    resetData() {
-      this.readyToRender = false;
-      this.itemsData = null;
-    },
-    formatItems(itemsDict) {
-      const itemsList = [];
-      for (const [key, value] of Object.entries(itemsDict)) {
-        itemsList.push({ id: key, ...value });
-      }
-      return itemsList;
-    },
-    formatHeaders(names) {
-      return names
-        .map((a) => {
-          if (a == "id") return;
-          return {
-            text: a,
-            align: "start",
-            sortable: true,
-            value: a,
-          };
-        })
-        .filter((a) => !!a);
-    },
   },
 };
 </script>
 
-<style scoped>
-</style>

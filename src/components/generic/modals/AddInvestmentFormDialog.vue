@@ -138,7 +138,7 @@ export default {
       this.$refs.form.validate();
       if (!this.valid) return;
       try {
-        await this.$network.post(this.rootURL + `/investments`, {
+        await this.$network.post(this.rootURL + `/investment`, {
           institute: this.$route.params.id,
           investor: this.investorId,
           investments_type: this.investmentType,

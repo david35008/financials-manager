@@ -120,7 +120,7 @@ app.get("/api/reset-data-base", async (req, res) => {
 
 async function ListTable(table) {
     const db = await readDb()
-    return db[table]
+    return db[table] || []
 }
 
 async function GetEntry(table, id) {
@@ -346,7 +346,7 @@ app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, re
     return res.json(investmentsTypeData);
 });
 
-app.post("/api/investments", async (req, res) => {
+app.post("/api/investment", async (req, res) => {
     const { institute, investor, investments_type, amount, } = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
@@ -357,4 +357,12 @@ app.post("/api/investments", async (req, res) => {
     res.json(investmentsData);
 });
 
+app.get("/api/investment", async (req, res) => {
+    const investmentsData = await ListTable(INVESTMENTS)
+    const investmentsDataList = dictToList(investmentsData)
+    for (let i = 0; i < investmentsDataList.length; i++) {
+        await fetchRelated(investmentsDataList[i]);
+    }
+    return res.json(investmentsDataList);
+});
 module.exports = app;

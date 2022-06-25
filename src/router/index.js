@@ -18,7 +18,7 @@ const routes = [
   },
   {
     path: '/0',
-    name: 'Home',
+    name: 'Home0',
     component: Dashboard,
     meta: { isPublic: true, title: "DashBoard" },
   },
