@@ -9,6 +9,9 @@ export default {
   },
   computed: {
     routeName() {
+      if (!this.tabelsConfig) return ""
+      if(this.isNullOrUndefined(this.$route.params.id)) return ""
+      if(this.isNullOrUndefined(this.tabelsConfig[this.$route.params.id])) return ""
       return this.tabelsConfig[this.$route.params.id].name;
     },
     title() {
