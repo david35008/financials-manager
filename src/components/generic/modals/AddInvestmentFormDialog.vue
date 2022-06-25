@@ -32,12 +32,26 @@
                 <v-col>
                   <v-select
                     reverse
-                    :items="investMentypesOptions"
+                    :items="investmentTypeOptions"
                     label="סוג ההשקעה"
+                    no-data-text="לא קיימים סוגי השקעה במערכת, יש להוסיף תחילה"
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="investmentType"
                     required
                     :rules="required"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                    reverse
+                    :items="investmentRouteOptions"
+                    label="מסלול ההשקעה"
+                    no-data-text="לא קיימים מסלולי השקעה במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="investmentRoute"
+                    required
                   />
                 </v-col>
               </v-row>
@@ -101,55 +115,50 @@ export default {
       investorId: null,
       investmentAmount: 0,
       investmentType: null,
+      investmentRoute: null,
       valid: false,
       investorsOptions: [],
-      investMentypesOptions: [],
+      investmentTypeOptions: [],
+      investmentRouteOptions: [],
     };
   },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
     async fetchData() {
       await this.fetchInvestors();
-      await this.fetchinvestMentypes();
+      await this.fetchInvestmentTypes();
+      await this.fetchInvestmentRoutes();
     },
     async fetchInvestors() {
-      try {
-        const { data } = await this.$network.get(this.rootURL + "/investor");
-        this.investors = this.dictToOptions(data);
-        this.readyToRender = true;
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-      }
+      const { data } = await this.$network.get(this.rootURL + "/investor");
+      this.investors = this.dictToOptions(data);
+      this.readyToRender = true;
     },
-    async fetchinvestMentypes() {
-      try {
-        const { data } = await this.$network.get(
-          this.rootURL + "/investments-type"
-        );
-        this.investMentypesOptions = this.dictToOptions(data);
-        this.readyToRender = true;
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-      }
+    async fetchInvestmentTypes() {
+      const { data } = await this.$network.get(
+        this.rootURL + "/investments-type"
+      );
+      this.investmentTypeOptions = this.dictToOptions(data);
+      this.readyToRender = true;
+    },
+    async fetchInvestmentRoutes() {
+      const { data } = await this.$network.get(
+        this.rootURL + "/investments-route"
+      );
+      this.investmentRouteOptions = this.dictToOptions(data);
+      this.readyToRender = true;
     },
     async handleSubmit() {
       this.$refs.form.validate();
       if (!this.valid) return;
-      try {
-        await this.$network.post(this.rootURL + `/investment`, {
-          institute: this.$route.params.id,
-          investor: this.investorId,
-          investments_type: this.investmentType,
-          amount: this.investmentAmount,
-        });
-        this.$emit("closeModal");
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-        return;
-      }
+      await this.$network.post(this.rootURL + `/investment`, {
+        institute: this.$route.params.id,
+        investor: this.investorId,
+        investments_type: this.investmentType,
+        investments_route: this.investmentRoute,
+        amount: this.investmentAmount,
+      });
+      this.$emit("closeModal");
     },
   },
 };

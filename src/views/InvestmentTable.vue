@@ -44,6 +44,12 @@ export default {
           type: "money",
         },
         {
+          text: "מסלול ההשקעה",
+          value: "investments_route_name",
+          align: "right",
+          sortable: true,
+        },
+        {
           text: "סוג ההשקעה",
           value: "investments_type_name",
           align: "right",

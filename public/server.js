@@ -35,12 +35,14 @@ const INSTITUTES = 'institutes'
 const INVESTORS = 'investors'
 const INVESTMENTS = 'investments'
 const INVESTMENTS_TYPES = 'investments_types'
+const INVESTMENTS_ROUTE = 'investments_route'
 
 const tableStructure = {
     institutes: {},
     investors: {},
     investments: {},
     investments_types: {},
+    investments_route: {},
 }
 
 
@@ -317,6 +319,44 @@ app.delete("/api/investments-type/:id", async (req, res) => {
     return res.status(404).json({ message: `Investments Type "${id}" Not Found` });
 });
 
+// -------------------- investment types ---------------------------
+
+app.get("/api/investments-route", async (req, res) => {
+    const data = await ListTable(INVESTMENTS_ROUTE);
+    res.json(data);
+});
+
+app.get("/api/investments-route/:id", async (req, res) => {
+    const { id } = req.params;
+    const investmentsRouteData = await GetEntry(INVESTMENTS_ROUTE, id);
+    if (investmentsRouteData) {
+        return res.json(investmentsRouteData);
+    }
+    return res.status(404).json({ message: `Investments Route "${id}" Not Found` });
+});
+
+app.post("/api/investments-route", async (req, res) => {
+    const { name } = req.body;
+    const investmentsRouteData = await CreateEntry(INVESTMENTS_ROUTE, { name });
+    res.json(investmentsRouteData);
+});
+
+app.put("/api/investments-route/:id", async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    const investmentsRouteData = await UpdateEntry(INVESTMENTS_ROUTE, id, { name });
+    res.json(investmentsRouteData);
+});
+
+app.delete("/api/investments-route/:id", async (req, res) => {
+    const { id } = req.params;
+    const resp = await DeleteEntry(INVESTMENTS_ROUTE, id);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
+    }
+    return res.status(404).json({ message: `Investments Route "${id}" Not Found` });
+});
+
 // -------------- investments ------------------------
 
 async function fetchRelated(obj) {
@@ -331,6 +371,10 @@ async function fetchRelated(obj) {
     if (obj.investments_type) {
         const investmentsTypeObj = await GetEntry(INVESTMENTS_TYPES, obj.investments_type)
         obj['investments_type_name'] = investmentsTypeObj.name
+    }
+    if (obj.investments_route) {
+        const investmentsRouteObj = await GetEntry(INVESTMENTS_ROUTE, obj.investments_route)
+        obj['investments_route_name'] = investmentsRouteObj.name
     }
     return obj
 }
@@ -363,11 +407,12 @@ app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, re
 });
 
 app.post("/api/investment", async (req, res) => {
-    const { institute, investor, investments_type, amount, as_of_date} = req.body;
+    const { institute, investor, investments_type, investments_route, amount, as_of_date} = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
         investments_type,
+        investments_route,
         as_of_date: as_of_date || now(),
         amount: parseFloat(amount)
     });
