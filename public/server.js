@@ -38,6 +38,7 @@ const INVESTMENTS_TYPES = 'investments_types'
 const INVESTMENTS_ROUTE = 'investments_route'
 
 const tableStructure = {
+    version: "1.0",
     institutes: {},
     investors: {},
     investments: {},
