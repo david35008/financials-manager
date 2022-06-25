@@ -30,7 +30,6 @@ export default {
     dialog: false,
     readyToRender: false,
     itemsData: null,
-    headersData: null,
     headers: [
       {
         text: "שם בעל ההשקעה",
@@ -85,9 +84,6 @@ export default {
         );
         const formatedItems = this.formatItems(data);
         this.itemsData = formatedItems;
-        this.headersData = this.formatHeaders(
-          Object.keys(formatedItems[0] || {})
-        );
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
@@ -96,7 +92,6 @@ export default {
     resetData() {
       this.readyToRender = false;
       this.itemsData = null;
-      this.headersData = null;
     },
     formatItems(itemsDict) {
       const itemsList = [];

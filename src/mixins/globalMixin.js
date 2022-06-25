@@ -19,7 +19,7 @@ export default {
     async fetchTableNames() {
       try {
         const { data } = await this.$network.get(this.rootURL + "/institute");
-        this.setTabelsConfig({ ...data, 0: { name: "All" } });
+        this.setTabelsConfig({ ...data, 0: { name: "סה\"כ" } });
         this.readyToRender = true;
       } catch (error) {
         alert("DataBase Error");
