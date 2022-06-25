@@ -21,30 +21,30 @@ export default {
     return {
       headers: [
         {
-          text: "שם בעל ההשקעה",
-          value: "investor_name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          text: "בית ההשקעות",
-          value: "institute_name",
-          align: "left",
-          sortable: true,
+          text: "סכום",
+          value: "amount",
+          align: "right",
+          sortable: false,
+          suffix: "₪",
+          type: "money",
         },
         {
           text: "סוג ההשקעה",
           value: "investments_type_name",
-          align: "left",
+          align: "right",
+          sortable: true
+        },
+        {
+          text: "בית ההשקעות",
+          value: "institute_name",
+          align: "right",
           sortable: true,
         },
         {
-          text: "סכום",
-          value: "amount",
-          align: "left",
-          sortable: false,
-          suffix: "₪",
-          type: "money",
+          text: "שם בעל ההשקעה",
+          value: "investor_name",
+          align: "right",
+          sortable: true,
         },
       ],
     };

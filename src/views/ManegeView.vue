@@ -54,7 +54,28 @@ export default {
     readyToRender: false,
     newEntity: null,
     itemsData: null,
-    headersData: null,
+    headersData: [
+      {
+        text: "נוצר",
+        value: "created_at",
+        align: "right",
+        sortable: true,
+      },
+      {
+        text: "עדכון אחרון",
+        value: "updated_at",
+        align: "right",
+        sortable: true,
+        formatting: { type: "filter", key: "formatDate" },
+        class: "no-break",
+      },
+      {
+        text: "שם",
+        value: "name",
+        align: "right",
+        sortable: true,
+      },
+    ],
     tableButtons: [
       {
         text: "edit",
@@ -96,9 +117,6 @@ export default {
         );
         const formatedItems = this.formatItems(data);
         this.itemsData = formatedItems;
-        this.headersData = this.formatHeaders(
-          Object.keys(formatedItems[0] || {})
-        );
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
@@ -107,7 +125,6 @@ export default {
     resetData() {
       this.readyToRender = false;
       this.itemsData = null;
-      this.headersData = null;
     },
     formatItems(itemsDict) {
       const itemsList = [];

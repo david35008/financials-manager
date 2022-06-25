@@ -43,6 +43,11 @@ const tableStructure = {
     investments_types: {},
 }
 
+
+function now() {
+    return new Date().getTime()
+}
+
 function isObject(element) {
     if (element) {
         return Object.getPrototypeOf(element) === Object.getPrototypeOf(new Object()) && !Array.isArray(element);
@@ -116,12 +121,28 @@ app.get("/api/reset-data-base", async (req, res) => {
 
 async function ListTable(table) {
     const db = await readDb()
-    return db[table] || []
+    let tableResults = db[table] || {};
+    for (const entry of Object.values(tableResults)) {
+        formatEntryDates(entry)
+    }
+    return tableResults
+}
+
+function formatEntryDates(entry) {
+    let keys = ['created_at', 'updated_at', 'as_of_date'];
+    for (let i = 0; i < keys.length; i++) {
+        let key = keys[i]
+        if (entry[key]) {
+            entry[key] = new Date(entry[key]).toDateString()
+        }
+    }
+    console.log(entry);
 }
 
 async function GetEntry(table, id) {
     const db = await readDb()
     const entrry = db[table][id]
+    formatEntryDates(entrry);
     if (!entrry) return false
     return { id, ...entrry }
 }
@@ -134,7 +155,7 @@ async function CreateEntry(table, newData) {
         allIds = [0]
     }
     const nextId = Math.max(...allIds) + 1
-    db[table][nextId] = newData;
+    db[table][nextId] = {...newData, created_at: now(), updated_at: now()};
     await writeDb(db)
     return { id: nextId, ...newData }
 }
@@ -143,7 +164,7 @@ async function UpdateEntry(table, id, updatedData) {
     const db = await readDb()
     db[table][id] = updatedData;
     await writeDb(db)
-    return { id, ...updatedData }
+    return { id, ...updatedData, updated_at: now() }
 }
 
 async function DeleteEntry(table, id) {
@@ -343,11 +364,12 @@ app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, re
 });
 
 app.post("/api/investment", async (req, res) => {
-    const { institute, investor, investments_type, amount, } = req.body;
+    const { institute, investor, investments_type, amount, as_of_date} = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
         investments_type,
+        as_of_date: as_of_date || now(),
         amount: parseFloat(amount)
     });
     res.json(investmentsData);
