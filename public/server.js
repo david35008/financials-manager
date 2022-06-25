@@ -136,7 +136,6 @@ function formatEntryDates(entry) {
             entry[key] = new Date(entry[key]).toDateString()
         }
     }
-    console.log(entry);
 }
 
 async function GetEntry(table, id) {
