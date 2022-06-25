@@ -22,6 +22,7 @@ export default {
     try {
       await this.$network.get(this.rootURL + "/start");
     } catch (error) {
+      console.error(error);
       alert("Init System Error");
     }
     await this.fetchTableNames();
