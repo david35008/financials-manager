@@ -1,5 +1,7 @@
 {
   "name": "financials-manager",
+  "description": "Financials account manager for all tour investments accounts",
+  "author": "David Diamant",
   "version": "0.1.0",
   "private": true,
   "scripts": {
