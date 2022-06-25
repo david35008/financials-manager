@@ -37,6 +37,13 @@ const routes = [
     meta: { isPublic: true, title: "Manage Investors" },
   },
   {
+    path: '/manageInvestmentInstitutes',
+    name: 'Manage Institutes',
+    props: { managetitle: "בתי השקעה", apiRoute: "institute" },
+    component: ManageView,
+    meta: { isPublic: true, title: "Manage Investors" },
+  },
+  {
     path: "/:id",
     component: InvestmentInstitutePageView,
     name: 'Investment Institute',

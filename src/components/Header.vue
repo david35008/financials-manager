@@ -19,17 +19,17 @@
 
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-       <v-toolbar-title class="header-title">ריכוז השקעות</v-toolbar-title>
+      <v-toolbar-title class="header-title">ריכוז השקעות</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
+      <!-- 
       <v-btn icon @dblclick="openModalDelete">
         <v-icon>mdi-delete-alert</v-icon>
       </v-btn>
 
       <v-btn icon @dblclick="openModalNew">
         <v-icon>mdi-folder-plus-outline</v-icon>
-      </v-btn>
+      </v-btn> -->
 
       <v-menu bottom left>
         <template v-slot:activator="{ on, tabelsConfig }">
@@ -75,11 +75,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import PromptModalAddTab from "./generic/modals/PromptModalAddTab.vue";
-import PromptModalDeleteTab from "./generic/modals/PromptModalDeleteTab.vue";
 
 export default {
-  components: { PromptModalAddTab, PromptModalDeleteTab },
   name: "Header-Comp",
   data: () => ({
     readyToRender: false,
@@ -87,19 +84,12 @@ export default {
     managePages: {
       "ניהול משקיעים": "manageInvestors",
       "ניהול סוגי השקעה": "manageInvestmentTypes",
+      "ניהול בתי השקעה": "manageInvestmentInstitutes",
     },
-    dialogCreate: false,
-    dialogDelete: false,
   }),
   computed: mapGetters(["tabelsConfig"]),
   methods: {
     ...mapActions(["setTabelsConfig"]),
-    async openModalNew() {
-      this.dialogCreate = true;
-    },
-    async openModalDelete() {
-      this.dialogDelete = true;
-    },
     async goTo(path) {
       if (this.$router.history.current.path === path) return;
       await this.$router.push(path);

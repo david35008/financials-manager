@@ -204,8 +204,8 @@ app.get("/api/institute/:id", async (req, res) => {
 });
 
 app.post("/api/institute", async (req, res) => {
-    const { instituteName } = req.body;
-    const instituteData = await CreateEntry(INSTITUTES, { name: instituteName });
+    const { name } = req.body;
+    const instituteData = await CreateEntry(INSTITUTES, { name });
     res.json(instituteData);
 });
 
@@ -352,7 +352,7 @@ app.post("/api/investments", async (req, res) => {
         institute,
         investor,
         investments_type,
-        amount
+        amount: parseFloat(amount)
     });
     res.json(investmentsData);
 });
