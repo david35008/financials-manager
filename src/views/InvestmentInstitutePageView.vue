@@ -4,7 +4,11 @@
     <v-divider />
     <v-spacer />
     <h1>{{ title }}</h1>
-    <InvestmentTable :add-row="addRow" :items-data="itemsData" />
+    <InvestmentTable
+      :add-row="addRow"
+      :items-data="itemsData"
+      :button="{ text: 'הוסף השקעה' }"
+    />
   </v-container>
   <GlobalLoader v-else />
 </template>

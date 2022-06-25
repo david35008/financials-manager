@@ -3,7 +3,7 @@
     :headers="headers"
     :info="itemsData"
     :insert-dialog="true"
-    :button="addRow ? { text: 'הוסף השקעה' } : null"
+    :button="button"
     @topButtonClick="addRow"
   />
 </template>
@@ -14,6 +14,7 @@ export default {
   name: "InvestmentTable",
   components: { GenericDataTable },
   props: {
+    button: {},
     addRow: {},
     itemsData: {},
   },
@@ -46,7 +47,7 @@ export default {
           text: "סוג ההשקעה",
           value: "investments_type_name",
           align: "right",
-          sortable: true
+          sortable: true,
         },
         {
           text: "בית ההשקעות",
