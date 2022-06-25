@@ -5,7 +5,7 @@
       <span>{{ investmentsMoneySum | currency }}</span>
     </div>
     <h1>סה"כ השקעות</h1>
-    <InvestmentTable :items-data="itemsData" />
+    <InvestmentTable :items-data="itemsData" :add-row="() => {}" />
   </v-container>
 </template>
 
@@ -63,7 +63,7 @@ export default {
 </script>
 
 <style scoped>
-.totalInvestMents { 
+.totalInvestMents {
   font-size: 30px;
 }
 </style>

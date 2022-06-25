@@ -4,7 +4,7 @@
     :info="itemsData"
     :insert-dialog="true"
     :button="addRow ? { text: 'הוסף השקעה' } : null"
-    @topButtonClick="addRow ? addRow : () => {}"
+    @topButtonClick="addRow"
   />
 </template>
 <script>
