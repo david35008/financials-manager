@@ -357,6 +357,15 @@ app.post("/api/investment", async (req, res) => {
     res.json(investmentsData);
 });
 
+app.get("/api/investment/money-sum", async (req, res) => {
+    const investmentsData = await ListTable(INVESTMENTS)
+    let moneySum = 0
+    for (const investment of Object.values(investmentsData)) {
+        moneySum += investment.amount
+    }
+    return res.json(moneySum);
+});
+
 app.get("/api/investment", async (req, res) => {
     const investmentsData = await ListTable(INVESTMENTS)
     const investmentsDataList = dictToList(investmentsData)
@@ -365,4 +374,5 @@ app.get("/api/investment", async (req, res) => {
     }
     return res.json(investmentsDataList);
 });
+
 module.exports = app;
