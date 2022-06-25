@@ -23,6 +23,12 @@ const routes = [
     meta: { isPublic: true, title: "DashBoard" },
   },
   {
+    path: '/index.html',
+    name: 'Home-index-html',
+    component: Dashboard,
+    meta: { isPublic: true, title: "DashBoard" },
+  },
+  {
     path: '/manageInvestors',
     name: 'Manage Investors',
     props: { managetitle: "משקיע", apiRoute: "investor" },
