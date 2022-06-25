@@ -9,5 +9,15 @@ module.exports = defineConfig({
   },
   transpileDependencies: [
     'vuetify'
-  ]
+  ],
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        appId: 'financials.manager/01',
+        win: {
+          icon: 'public/financial-icon.jpg'
+        }
+      }
+    }
+  }
 })
