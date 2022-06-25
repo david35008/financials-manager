@@ -21,6 +21,20 @@ export default {
     return {
       headers: [
         {
+          text: "נוצר",
+          value: "created_at",
+          align: "right",
+          sortable: true,
+        },
+        {
+          text: "עדכון אחרון",
+          value: "updated_at",
+          align: "right",
+          sortable: true,
+          formatting: { type: "filter", key: "formatDate" },
+          class: "no-break",
+        },
+        {
           text: "סכום",
           value: "amount",
           align: "right",
