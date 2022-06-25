@@ -95,7 +95,6 @@ export default {
           this.rootURL + `/${this.apiRoute}`
         );
         const formatedItems = this.formatItems(data);
-        console.log(formatedItems);
         this.itemsData = formatedItems;
         this.headersData = this.formatHeaders(
           Object.keys(formatedItems[0] || {})
