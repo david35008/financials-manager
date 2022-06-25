@@ -24,10 +24,10 @@ const fileProduction = "/data.json"
 const fileName = isProduction ? fileProduction : fileDevelopment
 const prodDirectory = "C:/DB";
 let directory = prodDirectory
-if (!isProduction) {
-    const path = require("path");
-    directory = path.resolve(__dirname, '..')
-}
+// if (!isProduction) {
+//     const path = require("path");
+//     directory = path.resolve(__dirname, '..')
+// }
 const DBPath = directory + fileName;
 
 
