@@ -18,14 +18,16 @@ const morganMiddleware = morgan((tokens, req, res) => {
 });
 app.use(morganMiddleware)
 
-// const path = require('path');
-// const rootDirectory = path.resolve(__dirname, '..')
 const isProduction = process.env.NODE_ENV === "production"
 const fileDevelopment = "/data.json"
 const fileProduction = "/data.json"
 const fileName = isProduction ? fileProduction : fileDevelopment
 const prodDirectory = "C:/DB";
-const directory = prodDirectory
+let directory = prodDirectory
+if (!isProduction) {
+    const path = require("path");
+    directory = path.resolve(__dirname, '..')
+}
 const DBPath = directory + fileName;
 
 
