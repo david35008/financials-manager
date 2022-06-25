@@ -11,7 +11,7 @@
 
 <script>
 import InvestmentTable from "@/views/InvestmentTable";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "DashBoard-Page",
@@ -33,6 +33,7 @@ export default {
     investmentsMoneySum: 0,
   }),
   methods: {
+    ...mapActions(["setTabelsConfig"]),
     async fetchAllInvestments() {
       try {
         const { data } = await this.$network.get(this.rootURL + `/investment/`);

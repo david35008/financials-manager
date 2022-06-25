@@ -4,13 +4,13 @@
     <v-divider />
     <v-spacer />
     <h1>{{ title }}</h1>
-    <InvestmentTable :add-row="addRow" :items-data="itemsData"/>
+    <InvestmentTable :add-row="addRow" :items-data="itemsData" />
   </v-container>
   <GlobalLoader v-else />
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import formDialog from "../components/generic/modals/AddInvestmentFormDialog.vue";
 import InvestmentTable from "@/views/InvestmentTable";
 
@@ -35,6 +35,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["setTabelsConfig"]),
     addRow() {
       this.dialog = true;
     },
@@ -50,6 +51,7 @@ export default {
         );
         const formatedItems = this.formatItems(data);
         this.itemsData = formatedItems;
+        await this.fetchTableNames();
         this.readyToRender = true;
       } catch (error) {
         console.error(error);
