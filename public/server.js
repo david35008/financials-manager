@@ -211,6 +211,12 @@ async function getInvestmentsRouteInvestments(investmentsRoute) {
     return investments.filter(x => x.investments_route == investmentsRoute)
 }
 
+async function getCoinInvestments(coin) {
+    const investmentsDB = await ListTable(INVESTMENTS)
+    const investments = dictToList(investmentsDB)
+    return investments.filter(x => x.coin == coin)
+}
+
 // --------------------institutes ---------------------------
 
 app.get("/api/institute", async (req, res) => {
@@ -462,6 +468,15 @@ app.get("/api/investment/by-investments-route/:investmentsRouteId", async (req, 
         await fetchRelated(investmentsRouteData[i]);
     }
     return res.json(investmentsRouteData);
+});
+
+app.get("/api/investment/by-coin/:coinId", async (req, res) => {
+    const { coinId } = req.params;
+    const coinData = await getCoinInvestments(coinId);
+    for (let i = 0; i < coinData.length; i++) {
+        await fetchRelated(coinData[i]);
+    }
+    return res.json(coinData);
 });
 
 app.post("/api/investment", async (req, res) => {
