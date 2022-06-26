@@ -87,6 +87,7 @@ export default {
       "ניהול בתי השקעה": "manageInvestmentInstitutes",
       "ניהול מסלולי השקעה": "manageInvestmentRoutes",
       "ניהול מטבעות": "manageCoins",
+      "ניהול מדינות": "manageCountries",
     },
   }),
   computed: mapGetters(["tabelsConfig"]),

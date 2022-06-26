@@ -46,6 +46,20 @@
                 <v-col>
                   <v-select
                     reverse
+                    :items="countriesOptions"
+                    label="מדינה"
+                    no-data-text="לא קיימות מדינות במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="country"
+                    required
+                    :rules="required"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                    reverse
                     :items="investmentRouteOptions"
                     label="מסלול ההשקעה"
                     no-data-text="לא קיימים מסלולי השקעה במערכת, יש להוסיף תחילה"
@@ -142,11 +156,13 @@ export default {
       investmentRoute: null,
       investmentTicker: null,
       coin: null,
+      country: null,
       valid: false,
       investorsOptions: [],
       investmentTypeOptions: [],
       investmentRouteOptions: [],
       coinsOptions: [],
+      countriesOptions: [],
       coinsDict: {},
     };
   },
@@ -157,6 +173,7 @@ export default {
       await this.fetchInvestmentTypes();
       await this.fetchInvestmentRoutes();
       await this.fetchCoins();
+      await this.fetchCountries();
     },
     async fetchInvestors() {
       const { data } = await this.$network.get(this.rootURL + "/investor");
@@ -183,6 +200,11 @@ export default {
       this.coinsOptions = this.dictToOptions(data);
       this.readyToRender = true;
     },
+    async fetchCountries() {
+      const { data } = await this.$network.get(this.rootURL + "/country");
+      this.countriesOptions = this.dictToOptions(data);
+      this.readyToRender = true;
+    },
     async handleSubmit() {
       this.$refs.form.validate();
       if (!this.valid) return;
@@ -194,6 +216,7 @@ export default {
         coin: this.coin,
         amount: this.investmentAmount,
         ticker: this.investmentTicker,
+        country: this.country,
       });
       this.$emit("closeModal");
     },

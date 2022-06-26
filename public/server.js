@@ -37,6 +37,7 @@ const INVESTMENTS = 'investments'
 const INVESTMENTS_TYPES = 'investments_types'
 const INVESTMENTS_ROUTE = 'investments_route'
 const COINS = 'coins'
+const COUNTRIES = 'countries'
 
 const tableStructure = {
     version: "1.0",
@@ -47,6 +48,7 @@ const tableStructure = {
     investments_types: {},
     investments_route: {},
     coins: {},
+    countries: {},
 }
 
 
@@ -215,6 +217,12 @@ async function getCoinInvestments(coin) {
     const investmentsDB = await ListTable(INVESTMENTS)
     const investments = dictToList(investmentsDB)
     return investments.filter(x => x.coin == coin)
+}
+
+async function getCountryInvestments(country) {
+    const investmentsDB = await ListTable(INVESTMENTS)
+    const investments = dictToList(investmentsDB)
+    return investments.filter(x => x.country == country)
 }
 
 // --------------------institutes ---------------------------
@@ -407,6 +415,44 @@ app.delete("/api/coin/:id", async (req, res) => {
     return res.status(404).json({ message: `Coin "${id}" Not Found` });
 });
 
+// -------------------- country ---------------------------
+
+app.get("/api/country", async (req, res) => {
+    const data = await ListTable(COUNTRIES);
+    res.json(data);
+});
+
+app.get("/api/country/:id", async (req, res) => {
+    const { id } = req.params;
+    const countriesData = await GetEntry(COUNTRIES, id);
+    if (countriesData) {
+        return res.json(countriesData);
+    }
+    return res.status(404).json({ message: `country "${id}" Not Found` });
+});
+
+app.post("/api/country", async (req, res) => {
+    const { name, suffix } = req.body;
+    const countriesData = await CreateEntry(COUNTRIES, { name, suffix });
+    res.json(countriesData);
+});
+
+app.put("/api/country/:id", async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    const countriesData = await UpdateEntry(COUNTRIES, id, { name });
+    res.json(countriesData);
+});
+
+app.delete("/api/country/:id", async (req, res) => {
+    const { id } = req.params;
+    const resp = await DeleteEntry(COUNTRIES, id);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
+    }
+    return res.status(404).json({ message: `country "${id}" Not Found` });
+});
+
 // -------------- investments ------------------------
 
 async function fetchRelated(obj) {
@@ -430,6 +476,10 @@ async function fetchRelated(obj) {
         const coinObj = await GetEntry(COINS, obj.coin)
         obj['coin_name'] = coinObj.name
         obj['coin_suffix'] = coinObj.suffix
+    }
+    if (obj.country) {
+        const countryObj = await GetEntry(COINS, obj.country)
+        obj['country_name'] = countryObj.name
     }
     return obj
 }
@@ -479,9 +529,18 @@ app.get("/api/investment/by-coin/:coinId", async (req, res) => {
     return res.json(coinData);
 });
 
+app.get("/api/investment/by-country/:countryId", async (req, res) => {
+    const { countryId } = req.params;
+    const countryData = await getCountryInvestments(countryId);
+    for (let i = 0; i < countryData.length; i++) {
+        await fetchRelated(countryData[i]);
+    }
+    return res.json(countryData);
+});
+
 app.post("/api/investment", async (req, res) => {
     const { institute, investor, investments_type, investments_route,
-            amount, coin, ticker, as_of_date } = req.body;
+            amount, coin, ticker, country, as_of_date } = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
@@ -489,6 +548,7 @@ app.post("/api/investment", async (req, res) => {
         investments_route,
         coin,
         ticker,
+        country,
         as_of_date: as_of_date || now(),
         amount: parseFloat(amount)
     });

@@ -57,6 +57,13 @@ const routes = [
     meta: { isPublic: true, title: "Manage Institutes" },
   },
   {
+    path: '/manageCountries',
+    name: 'Manage Countries',
+    props: { managetitle: "מדינות", apiRoute: "country" },
+    component: ManageView,
+    meta: { isPublic: true, title: "Manage Countries" },
+  },
+  {
     path: '/manageCoins',
     name: 'Manage Coins',
     props: { managetitle: "מטבעות", apiRoute: "coin", extraFields: [{ key: 'suffix', title: 'סימן המטבעה', required: true }] },
