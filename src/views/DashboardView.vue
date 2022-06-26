@@ -32,6 +32,15 @@
         ></bar-chart>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col md="4">
+        <bar-chart
+            :data="investmentsByInvestmentRoutes.data"
+            :labels="investmentsByInvestmentRoutes.labels"
+            chart-title="סכום כספים לפי מסלול השקעה"
+        ></bar-chart>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -53,6 +62,7 @@ export default {
     investmentsByInstitute: {},
     investmentsByInvestor: {},
     investmentsByInvestmentTypes: {},
+    investmentsByInvestmentRoutes: {},
   }),
   methods: {
     ...mapActions(["setTabelsConfig"]),
@@ -78,12 +88,19 @@ export default {
       );
       this.investmentsByInvestmentTypes = data;
     },
+    async fetchInvestmentsByInvestmentRoutes() {
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/by-investments-route`
+      );
+      this.investmentsByInvestmentRoutes = data;
+    },
     async fetchData() {
       this.resetData();
       await this.fetchCoins();
       await this.fetchInvestmentsByInstitute();
       await this.fetchInvestmentsByInvestor();
       await this.fetchInvestmentsByInvestmentTypes();
+      await this.fetchInvestmentsByInvestmentRoutes();
       this.readyToRender = true;
     },
   },

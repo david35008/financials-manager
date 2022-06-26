@@ -504,6 +504,7 @@ app.get("/api/investment/by-institute", async (req, res) => {
     const investmentByInstitute = {}
 
     for (const investment of Object.values(investments)) {
+        if(!investment.institute) continue
         const instituteName = institutes[investment.institute]
         if (!investmentByInstitute[instituteName]) {
             investmentByInstitute[instituteName] = {}
@@ -544,6 +545,7 @@ app.get("/api/investment/by-investor", async (req, res) => {
     const investmentByInvestor = {}
 
     for (const investment of Object.values(investments)) {
+        if(!investment.investor) continue
         const investorName = investors[investment.investor]
         if (!investmentByInvestor[investorName]) {
             investmentByInvestor[investorName] = {}
@@ -584,6 +586,7 @@ app.get("/api/investment/by-investments-type", async (req, res) => {
     const investmentByInvestmentsType = {}
 
     for (const investment of Object.values(investments)) {
+        if(!investment.investments_type) continue
         const investmentsTypeName = investmentsTypes[investment.investments_type]
         if (!investmentByInvestmentsType[investmentsTypeName]) {
             investmentByInvestmentsType[investmentsTypeName] = {}
@@ -606,7 +609,6 @@ app.get("/api/investment/by-investments-type", async (req, res) => {
     return res.json(respInvestmentsType);
 });
 
-
 app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, res) => {
     const { investmentsTypeId } = req.params;
     const investmentsTypeData = await getInvestmentsTypeInvestments(investmentsTypeId);
@@ -614,6 +616,38 @@ app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, re
         await fetchRelated(investmentsTypeData[i]);
     }
     return res.json(investmentsTypeData);
+});
+
+app.get("/api/investment/by-investments-route", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+    const investmentsRoutes = await modelToConfig(INVESTMENTS_ROUTE)
+
+    const investmentsRoutesNames = Object.values(investmentsRoutes)
+    const investmentByInvestmentsRoute = {}
+
+    for (const investment of Object.values(investments)) {
+        if(!investment.investments_route) continue
+        const investmentsRouteName = investmentsRoutes[investment.investments_route]
+        if (!investmentByInvestmentsRoute[investmentsRouteName]) {
+            investmentByInvestmentsRoute[investmentsRouteName] = {}
+        }
+
+        const investmentsRoute = investmentByInvestmentsRoute[investmentsRouteName]
+        const coinName = coins[investment.coin]
+
+        if (!investmentsRoute[coinName]) {
+            investmentsRoute[coinName] = 0
+        }
+
+        investmentsRoute[coinName] += investment.amount
+    }
+
+    const respInvestmentsRoute = {
+        labels: investmentsRoutesNames,
+        data: investmentByInvestmentsRoute
+    }
+    return res.json(respInvestmentsRoute);
 });
 
 app.get("/api/investment/by-investments-route/:investmentsRouteId", async (req, res) => {
