@@ -21,7 +21,7 @@ export default {
   methods: {
     async fetchTableNames() {
       const { data } = await this.$network.get(this.rootURL + "/institute");
-      this.setTabelsConfig({ "allInvestments": { name: "ההשקעות שלי" }, ...data });
+      this.setTabelsConfig({ "allInvestments": { name: "ההשקעות שלי" }, "": { name: "תמונת מצב" }, ...data });
       this.readyToRender = true;
     },
     isNullOrUndefined(value) {

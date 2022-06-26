@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Dashboard from '../views/Dashboard.vue'
+import Dashboard from '../views/DashboardView.vue'
+import AllInvestMents from '../views/AllInvestMentsView.vue'
 import InvestmentInstitutePageView from '../views/InvestmentInstitutePageView.vue'
 import ManageView from '../views/ManegeView.vue'
-import NotFoundPage from '../views/404.vue'
+import NotFoundPage from '../views/404View.vue'
 
 Vue.use(VueRouter)
 
@@ -31,7 +32,7 @@ const routes = [
   {
     path: '/allInvestments',
     name: 'All Investments',
-    component: Dashboard,
+    component: AllInvestMents,
     meta: { isPublic: true, title: "All Investments" },
   },
   {

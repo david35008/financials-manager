@@ -11,7 +11,7 @@
   />
 </template>
 <script>
-import GenericDataTable from "../components/generic/genericDataTable.vue";
+import GenericDataTable from "./genericDataTable.vue";
 
 export default {
   name: "InvestmentTable",

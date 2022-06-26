@@ -48,7 +48,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import investmentFormDialog from "../components/generic/modals/InvestmentFormDialog.vue";
-import InvestmentTable from "@/views/InvestmentTable";
+import InvestmentTable from "@/components/InvestmentTable";
 
 export default {
   name: "Page-View",

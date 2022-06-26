@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import genericDataTable from "../components/generic/genericDataTable.vue";
+import genericDataTable from "../components/genericDataTable.vue";
 
 export default {
   name: "Manage-View",
