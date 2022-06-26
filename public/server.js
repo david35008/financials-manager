@@ -386,8 +386,8 @@ app.get("/api/coin/:id", async (req, res) => {
 });
 
 app.post("/api/coin", async (req, res) => {
-    const { name } = req.body;
-    const coinsData = await CreateEntry(COINS, { name });
+    const { name, suffix } = req.body;
+    const coinsData = await CreateEntry(COINS, { name, suffix });
     res.json(coinsData);
 });
 

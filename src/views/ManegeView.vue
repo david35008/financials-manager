@@ -10,7 +10,14 @@
             v-model="newEntity"
             :label="`שם ה${managetitle}`"
             required
-          ></v-text-field>
+          />
+          <v-text-field
+            :key="field.key"
+            v-for="field in extraFields"
+            v-model="extraFieldsState[field.key]"
+            :label="field.title"
+            :required="field.required"
+          />
         </v-card-text>
 
         <v-divider></v-divider>
@@ -24,7 +31,7 @@
     </v-dialog>
     <h1>ניהול {{ managetitle }}ים</h1>
     <genericDataTable
-      :headers="headersData"
+      :headers="headers"
       :info="itemsData"
       :insert-dialog="true"
       :button="{ text: `הוספת ${managetitle}` }"
@@ -48,12 +55,20 @@ export default {
   props: {
     managetitle: { type: String, required: true },
     apiRoute: { type: String, required: true },
+    extraFields: {
+      type: Array,
+      required: false,
+      default: function () {
+        return [];
+      },
+    },
   },
   data: () => ({
     dialog: false,
     readyToRender: false,
     newEntity: null,
     itemsData: null,
+    extraFieldsState: {},
     headersData: [
       {
         text: "נוצר",
@@ -76,6 +91,7 @@ export default {
         sortable: true,
       },
     ],
+    headers: [],
     tableButtons: [
       {
         text: "edit",
@@ -93,13 +109,27 @@ export default {
   }),
   async created() {
     await this.fetchData();
+    this.addExtraHeaders()
   },
   watch: {
     "$route.params": async function () {
       await this.fetchData();
+      this.addExtraHeaders()
     },
   },
   methods: {
+    addExtraHeaders() {
+      this.headers = [...this.headersData]
+      for (let i = 0; i < this.extraFields.length; i++) {
+        let extraField = this.extraFields[i]
+        this.headers.splice(2, 0, {
+          text: extraField.title,
+          value: extraField.key,
+          align: "right",
+          sortable: true,
+        },);
+      }
+    },
     async addRow() {
       this.dialog = true;
     },
@@ -155,6 +185,7 @@ export default {
       try {
         await this.$network.post(this.rootURL + `/${this.apiRoute}`, {
           name: this.newEntity,
+          ...this.extraFieldsState
         });
         await this.fetchData();
       } catch (error) {

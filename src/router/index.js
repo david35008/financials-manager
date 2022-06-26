@@ -57,6 +57,13 @@ const routes = [
     meta: { isPublic: true, title: "Manage Institutes" },
   },
   {
+    path: '/manageCoins',
+    name: 'Manage Coins',
+    props: { managetitle: "מטבעות", apiRoute: "coin", extraFields: [{ key: 'suffix', title: 'סימן המטבעה', required: true }] },
+    component: ManageView,
+    meta: { isPublic: true, title: "Manage Coins" },
+  },
+  {
     path: "/:id",
     component: InvestmentInstitutePageView,
     name: 'Investment',

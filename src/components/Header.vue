@@ -86,6 +86,7 @@ export default {
       "ניהול סוגי השקעה": "manageInvestmentTypes",
       "ניהול בתי השקעה": "manageInvestmentInstitutes",
       "ניהול מסלולי השקעה": "manageInvestmentRoutes",
+      "ניהול מטבעות": "manageCoins",
     },
   }),
   computed: mapGetters(["tabelsConfig"]),
