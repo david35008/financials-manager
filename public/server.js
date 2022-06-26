@@ -531,6 +531,16 @@ app.get("/api/investment/by-coin/:coinId", async (req, res) => {
     return res.json(coinData);
 });
 
+app.get("/api/investment/sum-by-coin/:coinId", async (req, res) => {
+    const { coinId } = req.params;
+    const coinData = await getCoinInvestments(coinId);
+    let moneySum = 0
+    for (const investment of coinData) {
+        moneySum += investment.amount
+    }
+    return res.json(moneySum);
+});
+
 app.get("/api/investment/by-country/:countryId", async (req, res) => {
     const { countryId } = req.params;
     const countryData = await getCountryInvestments(countryId);
