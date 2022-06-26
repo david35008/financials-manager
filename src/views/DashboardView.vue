@@ -17,6 +17,13 @@
           chart-title="סכום כספים לפי בית השקעה"
         ></bar-chart>
       </v-col>
+      <v-col md="4">
+        <bar-chart
+          :data="investors.data"
+          :labels="investors.labels"
+          chart-title="סכום כספים לפי משקיע"
+        ></bar-chart>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -37,6 +44,7 @@ export default {
     readyToRender: false,
     coins: [],
     institutes: {},
+    investors: {},
   }),
   methods: {
     ...mapActions(["setTabelsConfig"]),
@@ -50,10 +58,17 @@ export default {
       );
       this.institutes = data;
     },
+    async fetchInvestmentByInvestor() {
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/by-investor`
+      );
+      this.investors = data;
+    },
     async fetchData() {
       this.resetData();
       await this.fetchCoins();
       await this.fetchInvestmentByInstitute();
+      await this.fetchInvestmentByInvestor();
       this.readyToRender = true;
     },
   },

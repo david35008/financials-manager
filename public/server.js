@@ -535,6 +535,37 @@ app.get("/api/investment/by-institute/:instituteId", async (req, res) => {
     return res.json(instituteData);
 });
 
+app.get("/api/investment/by-investor", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+    const investors = await modelToConfig(INVESTORS)
+
+    const investorsNames = Object.values(investors)
+    const investmentByInvestor = {}
+
+    for (const investment of Object.values(investments)) {
+        const investorName = investors[investment.investor]
+        if (!investmentByInvestor[investorName]) {
+            investmentByInvestor[investorName] = {}
+        }
+
+        const investor = investmentByInvestor[investorName]
+        const coinName = coins[investment.coin]
+
+        if (!investor[coinName]) {
+            investor[coinName] = 0
+        }
+
+        investor[coinName] += investment.amount
+    }
+
+    const respInvestor = {
+        labels: investorsNames,
+        data: investmentByInvestor
+    }
+    return res.json(respInvestor);
+});
+
 app.get("/api/investment/by-investor/:investorId", async (req, res) => {
     const { investorId } = req.params;
     const investorData = await getInvestorInvestments(investorId);
