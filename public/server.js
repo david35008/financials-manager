@@ -227,6 +227,15 @@ async function getCountryInvestments(country) {
     return investments.filter(x => x.country == country)
 }
 
+async function modelToConfig(modelName) {
+    const entities = await ListTable(modelName)
+    const respDict = {}
+    for (const [key, valueDict] of Object.entries(entities)) {
+        respDict[key] = valueDict['name']
+    }
+    return respDict
+}
+
 // --------------------institutes ---------------------------
 
 app.get("/api/institute", async (req, res) => {
@@ -485,6 +494,37 @@ async function fetchRelated(obj) {
     }
     return obj
 }
+
+app.get("/api/investment/by-institute", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+    const institutes = await modelToConfig(INSTITUTES)
+
+    const institutesNames = Object.values(institutes)
+    const investmentByInstitute = {}
+
+    for (const investment of Object.values(investments)) {
+        const instituteName = institutes[investment.institute]
+        if (!investmentByInstitute[instituteName]) {
+            investmentByInstitute[instituteName] = {}
+        }
+
+        const institute = investmentByInstitute[instituteName]
+        const coinName = coins[investment.coin]
+
+        if (!institute[coinName]) {
+            institute[coinName] = 0
+        }
+
+        institute[coinName] += investment.amount
+    }
+
+    const respInstitute = {
+        labels: institutesNames,
+        data: investmentByInstitute
+    }
+    return res.json(respInstitute);
+});
 
 app.get("/api/investment/by-institute/:instituteId", async (req, res) => {
     const { instituteId } = req.params;
