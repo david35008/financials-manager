@@ -575,6 +575,38 @@ app.get("/api/investment/by-investor/:investorId", async (req, res) => {
     return res.json(investorData);
 });
 
+app.get("/api/investment/by-investments-type", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+    const investmentsTypes = await modelToConfig(INVESTMENTS_TYPES)
+
+    const investmentsTypesNames = Object.values(investmentsTypes)
+    const investmentByInvestmentsType = {}
+
+    for (const investment of Object.values(investments)) {
+        const investmentsTypeName = investmentsTypes[investment.investments_type]
+        if (!investmentByInvestmentsType[investmentsTypeName]) {
+            investmentByInvestmentsType[investmentsTypeName] = {}
+        }
+
+        const investmentsType = investmentByInvestmentsType[investmentsTypeName]
+        const coinName = coins[investment.coin]
+
+        if (!investmentsType[coinName]) {
+            investmentsType[coinName] = 0
+        }
+
+        investmentsType[coinName] += investment.amount
+    }
+
+    const respInvestmentsType = {
+        labels: investmentsTypesNames,
+        data: investmentByInvestmentsType
+    }
+    return res.json(respInvestmentsType);
+});
+
+
 app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, res) => {
     const { investmentsTypeId } = req.params;
     const investmentsTypeData = await getInvestmentsTypeInvestments(investmentsTypeId);

@@ -12,16 +12,23 @@
     <v-row>
       <v-col md="4">
         <bar-chart
-          :data="institutes.data"
-          :labels="institutes.labels"
+          :data="investmentsByInstitute.data"
+          :labels="investmentsByInstitute.labels"
           chart-title="סכום כספים לפי בית השקעה"
         ></bar-chart>
       </v-col>
       <v-col md="4">
         <bar-chart
-          :data="investors.data"
-          :labels="investors.labels"
+          :data="investmentsByInvestor.data"
+          :labels="investmentsByInvestor.labels"
           chart-title="סכום כספים לפי משקיע"
+        ></bar-chart>
+      </v-col>
+      <v-col md="4">
+        <bar-chart
+          :data="investmentsByInvestmentTypes.data"
+          :labels="investmentsByInvestmentTypes.labels"
+          chart-title="סכום כספים לפי סוגי השקעה"
         ></bar-chart>
       </v-col>
     </v-row>
@@ -43,8 +50,9 @@ export default {
   data: () => ({
     readyToRender: false,
     coins: [],
-    institutes: {},
-    investors: {},
+    investmentsByInstitute: {},
+    investmentsByInvestor: {},
+    investmentsByInvestmentTypes: {},
   }),
   methods: {
     ...mapActions(["setTabelsConfig"]),
@@ -52,23 +60,30 @@ export default {
       const { data } = await this.$network.get(this.rootURL + `/coin`);
       this.coins = data;
     },
-    async fetchInvestmentByInstitute() {
+    async fetchInvestmentsByInstitute() {
       const { data } = await this.$network.get(
         this.rootURL + `/investment/by-institute`
       );
-      this.institutes = data;
+      this.investmentsByInstitute = data;
     },
-    async fetchInvestmentByInvestor() {
+    async fetchInvestmentsByInvestor() {
       const { data } = await this.$network.get(
         this.rootURL + `/investment/by-investor`
       );
-      this.investors = data;
+      this.investmentsByInvestor = data;
+    },
+    async fetchInvestmentsByInvestmentTypes() {
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/by-investments-type`
+      );
+      this.investmentsByInvestmentTypes = data;
     },
     async fetchData() {
       this.resetData();
       await this.fetchCoins();
-      await this.fetchInvestmentByInstitute();
-      await this.fetchInvestmentByInvestor();
+      await this.fetchInvestmentsByInstitute();
+      await this.fetchInvestmentsByInvestor();
+      await this.fetchInvestmentsByInvestmentTypes();
       this.readyToRender = true;
     },
   },
