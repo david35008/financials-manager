@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 // const Cryptr = require('cryptr');
-// const cryptr = new Cryptr('b36b1759238bbed767e28d32af4a846ba6f7e94e1f00618b1cd4c6fa8f4812af882822a62a198eebe489');
+// const cryptr = new Cryptr('b36b1759238bed767e28d32af4a846ba6f7e94e1f00618b1cd4c6fa8f4812af882822a62a198ebe489');
 
 const morganMiddleware = morgan((tokens, req, res) => {
     const myTiny = [tokens.method(req, res),
@@ -36,6 +36,7 @@ const INVESTORS = 'investors'
 const INVESTMENTS = 'investments'
 const INVESTMENTS_TYPES = 'investments_types'
 const INVESTMENTS_ROUTE = 'investments_route'
+const COINS = 'coins'
 
 const tableStructure = {
     version: "1.0",
@@ -45,6 +46,7 @@ const tableStructure = {
     investments: {},
     investments_types: {},
     investments_route: {},
+    coins: {},
 }
 
 
@@ -54,16 +56,15 @@ function now() {
 
 function isObject(element) {
     if (element) {
-        return Object.getPrototypeOf(element) === Object.getPrototypeOf(new Object()) && !Array.isArray(element);
+        return Object.getPrototypeOf(element) === Object.getPrototypeOf({}) && !Array.isArray(element);
     }
     return false
 }
 
 function isEmpty(value) {
-    if (value === undefined || value === null) return true
-    if (Array.isArray(value) && value.length == 0) return true
-    if (isObject(value) && Object.keys(value).length == 0) return true
-    return false;
+    if(value === undefined || value === null) return true
+    if(Array.isArray(value) && value.length === 0) return true
+    return !!(isObject(value) && Object.keys(value).length === 0);
 }
 
 async function readDb() {
@@ -77,7 +78,7 @@ async function readDb() {
 
 async function writeDb(jsonContent) {
     console.log('Write DataBase')
-    let content = JSON.stringify(jsonContent, 0, 2);
+    let content = JSON.stringify(jsonContent, null, 2);
     // if (isProduction) {
     //     content = cryptr.encrypt(content);
     // }
@@ -100,13 +101,13 @@ async function validateDbReady() {
     }
 }
 
-async function ensureDirSync(dirpath) {
-    console.log(`ENV mode Production ${isProduction}:  Validate folder "${dirpath}" exist`)
+async function ensureDirSync(dirPath) {
+    console.log(`ENV mode Production ${isProduction}:  Validate folder "${dirPath}" exist`)
     try {
-        await fs.mkdir(dirpath);
+        await fs.mkdir(dirPath);
     } catch (err) {
         if (err.code === "EEXIST") return;
-        else console.log(err);
+        console.log(err);
     }
 }
 
@@ -144,16 +145,16 @@ function formatEntryDates(entry) {
 
 async function GetEntry(table, id) {
     const db = await readDb()
-    const entrry = db[table][id]
-    formatEntryDates(entrry);
-    if (!entrry) return false
-    return { id, ...entrry }
+    const entry = db[table][id]
+    formatEntryDates(entry);
+    if (!entry) return false
+    return { id, ...entry }
 }
 
 async function CreateEntry(table, newData) {
     const db = await readDb()
-    const allVals = db[table]
-    let allIds = Object.keys(allVals)
+    const allValues = db[table]
+    let allIds = Object.keys(allValues)
     if (isEmpty(allIds)) {
         allIds = [0]
     }
@@ -189,22 +190,25 @@ function dictToList(dict) {
 async function getInstituteInvestments(institute) {
     const investmentsDB = await ListTable(INVESTMENTS)
     const investments = dictToList(investmentsDB)
-    const filteredInvestments = investments.filter(x => x.institute == institute)
-    return filteredInvestments
+    return investments.filter(x => x.institute == institute)
 }
 
 async function getInvestorInvestments(investor) {
     const investmentsDB = await ListTable(INVESTMENTS)
     const investments = dictToList(investmentsDB)
-    const filteredInvestments = investments.filter(x => x.investor == investor)
-    return filteredInvestments
+    return investments.filter(x => x.investor == investor)
 }
 
 async function getInvestmentsTypeInvestments(investmentsType) {
     const investmentsDB = await ListTable(INVESTMENTS)
     const investments = dictToList(investmentsDB)
-    const filteredInvestments = investments.filter(x => x.investments_type == investmentsType)
-    return filteredInvestments
+    return investments.filter(x => x.investments_type == investmentsType)
+}
+
+async function getInvestmentsRouteInvestments(investmentsRoute) {
+    const investmentsDB = await ListTable(INVESTMENTS)
+    const investments = dictToList(investmentsDB)
+    return investments.filter(x => x.investments_route == investmentsRoute)
 }
 
 // --------------------institutes ---------------------------
@@ -321,7 +325,7 @@ app.delete("/api/investments-type/:id", async (req, res) => {
     return res.status(404).json({ message: `Investments Type "${id}" Not Found` });
 });
 
-// -------------------- investment types ---------------------------
+// -------------------- investment routes ---------------------------
 
 app.get("/api/investments-route", async (req, res) => {
     const data = await ListTable(INVESTMENTS_ROUTE);
@@ -359,6 +363,44 @@ app.delete("/api/investments-route/:id", async (req, res) => {
     return res.status(404).json({ message: `Investments Route "${id}" Not Found` });
 });
 
+// -------------------- coins ---------------------------
+
+app.get("/api/coin", async (req, res) => {
+    const data = await ListTable(COINS);
+    res.json(data);
+});
+
+app.get("/api/coin/:id", async (req, res) => {
+    const { id } = req.params;
+    const coinsData = await GetEntry(COINS, id);
+    if (coinsData) {
+        return res.json(coinsData);
+    }
+    return res.status(404).json({ message: `Coin "${id}" Not Found` });
+});
+
+app.post("/api/coin", async (req, res) => {
+    const { name } = req.body;
+    const coinsData = await CreateEntry(COINS, { name });
+    res.json(coinsData);
+});
+
+app.put("/api/coin/:id", async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    const coinsData = await UpdateEntry(COINS, id, { name });
+    res.json(coinsData);
+});
+
+app.delete("/api/coin/:id", async (req, res) => {
+    const { id } = req.params;
+    const resp = await DeleteEntry(COINS, id);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
+    }
+    return res.status(404).json({ message: `Coin "${id}" Not Found` });
+});
+
 // -------------- investments ------------------------
 
 async function fetchRelated(obj) {
@@ -377,6 +419,11 @@ async function fetchRelated(obj) {
     if (obj.investments_route) {
         const investmentsRouteObj = await GetEntry(INVESTMENTS_ROUTE, obj.investments_route)
         obj['investments_route_name'] = investmentsRouteObj.name
+    }
+    if (obj.coin) {
+        const coinObj = await GetEntry(COINS, obj.coin)
+        obj['coin_name'] = coinObj.name
+        obj['coin_suffix'] = coinObj.suffix
     }
     return obj
 }
@@ -408,13 +455,24 @@ app.get("/api/investment/by-investments-type/:investmentsTypeId", async (req, re
     return res.json(investmentsTypeData);
 });
 
+app.get("/api/investment/by-investments-route/:investmentsRouteId", async (req, res) => {
+    const { investmentsRouteId } = req.params;
+    const investmentsRouteData = await getInvestmentsRouteInvestments(investmentsRouteId);
+    for (let i = 0; i < investmentsRouteData.length; i++) {
+        await fetchRelated(investmentsRouteData[i]);
+    }
+    return res.json(investmentsRouteData);
+});
+
 app.post("/api/investment", async (req, res) => {
-    const { institute, investor, investments_type, investments_route, amount, as_of_date} = req.body;
+    const { institute, investor, investments_type, investments_route,
+            amount, coin, as_of_date } = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
         investments_type,
         investments_route,
+        coin,
         as_of_date: as_of_date || now(),
         amount: parseFloat(amount)
     });
