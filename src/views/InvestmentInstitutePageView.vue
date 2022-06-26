@@ -1,25 +1,34 @@
 <template>
   <v-container class="container" v-if="readyToRender">
-    <investment-form-dialog :dialog="createDialog" @submitEntity="submitCreateEntity" @closeModal="createDialog=false" />
-    <investment-form-dialog :dialog="editDialog" @submitEntity="submitEditEntity" @closeModal="editDialog=false" :entity-to-edit="editEntity" />
+    <investment-form-dialog
+      :dialog="createDialog"
+      @submitEntity="submitCreateEntity"
+      @closeModal="createDialog = false"
+    />
+    <investment-form-dialog
+      :dialog="editDialog"
+      @submitEntity="submitEditEntity"
+      @closeModal="editDialog = false"
+      :entity-to-edit="editEntity"
+    />
     <v-dialog :value="deleteDialog" persistent max-width="500">
-    <v-card>
-      <v-card-text
-      >? "האם אתה בטוח שברצונך למחוק את השקעה מספר "{{
-          deleteEntity.id
-        }}</v-card-text
-      >
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="deleteDialog = false"
-        >ביטול</v-btn
+      <v-card>
+        <v-card-text
+          >? "האם אתה בטוח שברצונך למחוק את השקעה מספר "{{
+            deleteEntity.id
+          }}</v-card-text
         >
-        <v-btn color="red darken-1" text @click="submitDeleteEntity"
-        >אישור</v-btn
-        >
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="deleteDialog = false"
+            >ביטול</v-btn
+          >
+          <v-btn color="red darken-1" text @click="submitDeleteEntity"
+            >אישור</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-divider />
     <v-spacer />
     <h1>{{ title }}</h1>
@@ -55,7 +64,7 @@ export default {
     deleteEntity: {},
     readyToRender: false,
     itemsData: null,
-    apiRoute: 'investment',
+    apiRoute: "investment",
     extraHeaders: [
       {
         value: "actions",
@@ -96,7 +105,7 @@ export default {
       this.editDialog = true;
     },
     async deleteRow(data) {
-      console.log('delete', data)
+      console.log("delete", data);
       this.deleteEntity = data;
       this.deleteDialog = true;
     },
@@ -121,7 +130,7 @@ export default {
       }
       await this.$network.post(this.rootURL + `/${this.apiRoute}`, newEntity);
       await this.fetchData();
-      this.newEntity = {}
+      this.newEntity = {};
       this.createDialog = false;
     },
     async submitEditEntity(editedEntity) {
@@ -129,7 +138,10 @@ export default {
         this.editDialog = false;
         return;
       }
-      await this.$network.put(this.rootURL + `/${this.apiRoute}/${this.editEntity.id}`, editedEntity);
+      await this.$network.put(
+        this.rootURL + `/${this.apiRoute}/${this.editEntity.id}`,
+        editedEntity
+      );
       this.editDialog = false;
       this.editEntity = {};
       await this.fetchData();
@@ -139,7 +151,9 @@ export default {
         this.deleteDialog = false;
         return;
       }
-      await this.$network.delete(this.rootURL + `/${this.apiRoute}/${this.deleteEntity.id}`);
+      await this.$network.delete(
+        this.rootURL + `/${this.apiRoute}/${this.deleteEntity.id}`
+      );
       this.deleteDialog = false;
       this.deleteEntity = {};
       await this.fetchData();

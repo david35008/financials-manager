@@ -150,7 +150,7 @@ export default {
         eventName: "deleteRow",
         color: "red",
         tooltip: "מחיקה",
-        class: "hidden"
+        class: "hidden",
       },
       {
         text: "mdi-pencil",
@@ -189,7 +189,7 @@ export default {
     async editRow(data) {
       for (let i = 0; i < this.extraFields.length; i++) {
         let extraField = this.extraFields[i];
-        this.extraFieldsState[extraField.key] = data[extraField.key]
+        this.extraFieldsState[extraField.key] = data[extraField.key];
       }
       this.editEntity = data;
       this.editDialog = true;
@@ -200,7 +200,9 @@ export default {
     },
     async fetchData() {
       this.resetData();
-      const { data } = await this.$network.get(this.rootURL + `/${this.apiRoute}`);
+      const { data } = await this.$network.get(
+        this.rootURL + `/${this.apiRoute}`
+      );
       this.itemsData = this.formatItems(data);
       this.readyToRender = true;
     },
@@ -229,7 +231,7 @@ export default {
         ...this.extraFieldsState,
       });
       await this.fetchData();
-      this.newEntity = null
+      this.newEntity = null;
       this.extraFieldsState = {};
       this.createDialog = false;
     },
@@ -255,7 +257,9 @@ export default {
         this.deleteDialog = false;
         return;
       }
-      await this.$network.delete(this.rootURL + `/${this.apiRoute}/${this.deleteEntity.id}`);
+      await this.$network.delete(
+        this.rootURL + `/${this.apiRoute}/${this.deleteEntity.id}`
+      );
       this.deleteDialog = false;
       this.deleteEntity = {};
       this.extraFieldsState = {};

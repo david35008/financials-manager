@@ -64,8 +64,8 @@ function isObject(element) {
 }
 
 function isEmpty(value) {
-    if(value === undefined || value === null) return true
-    if(Array.isArray(value) && value.length === 0) return true
+    if (value === undefined || value === null) return true
+    if (Array.isArray(value) && value.length === 0) return true
     return !!(isObject(value) && Object.keys(value).length === 0);
 }
 
@@ -162,14 +162,14 @@ async function CreateEntry(table, newData) {
         allIds = [0]
     }
     const nextId = Math.max(...allIds) + 1
-    db[table][nextId] = {...newData, created_at: now(), updated_at: now()};
+    db[table][nextId] = { ...newData, created_at: now(), updated_at: now() };
     await writeDb(db)
     return { id: nextId, ...newData }
 }
 
 async function UpdateEntry(table, id, updatedData) {
     const db = await readDb()
-    updatedData = {...db[table][id], ...updatedData, 'updated_at': now()};
+    updatedData = { ...db[table][id], ...updatedData, 'updated_at': now() };
     db[table][id] = updatedData;
     await writeDb(db)
     return { id, ...updatedData }
@@ -542,7 +542,7 @@ app.get("/api/investment/by-country/:countryId", async (req, res) => {
 
 app.post("/api/investment", async (req, res) => {
     const { institute, investor, investments_type, investments_route,
-            amount, coin, ticker, country, as_of_date } = req.body;
+        amount, coin, ticker, country, as_of_date } = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
@@ -560,7 +560,7 @@ app.post("/api/investment", async (req, res) => {
 app.put("/api/investment/:id", async (req, res) => {
     const { id } = req.params;
     const { institute, investor, investments_type, investments_route,
-            amount, coin, ticker, country, as_of_date } = req.body;
+        amount, coin, ticker, country, as_of_date } = req.body;
     const investmentsData = await UpdateEntry(INVESTMENTS, id, {
         institute,
         investor,

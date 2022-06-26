@@ -4,7 +4,6 @@
       app
       color="#6A76AB"
       dark
-      shrink-on-scroll
       prominent
       src="https://picsum.photos/1920/1080?random"
       fade-img-on-scroll
@@ -17,20 +16,12 @@
         ></v-img>
       </template>
 
+      <!--the hamburger option-->
       <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
       <v-toolbar-title class="header-title">ריכוז השקעות</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <!-- 
-      <v-btn icon @dblclick="openModalDelete">
-        <v-icon>mdi-delete-alert</v-icon>
-      </v-btn>
-
-      <v-btn icon @dblclick="openModalNew">
-        <v-icon>mdi-folder-plus-outline</v-icon>
-      </v-btn> -->
-
       <v-menu bottom left>
         <template v-slot:activator="{ on, tabelsConfig }">
           <v-btn color="transport" v-bind="tabelsConfig" v-on="on">
@@ -62,14 +53,6 @@
         </v-tabs>
       </template>
     </v-app-bar>
-    <!-- <prompt-modal-add-tab
-      :dialog="dialogCreate"
-      @closeModal="dialogCreate = false"
-    />
-    <prompt-modal-delete-tab
-      :dialog="dialogDelete"
-      @closeModal="dialogDelete = false"
-    /> -->
   </v-card>
 </template>
 

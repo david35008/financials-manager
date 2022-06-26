@@ -55,7 +55,6 @@
     </template>
 
     <template #item="{ item }">
-      <!-- <tr @click="props.expanded = !props.expanded"> -->
       <tr
         :class="{
           'low-opacity': disabledRowByFunction
@@ -66,10 +65,12 @@
         <td
           v-for="(header, index) in headers"
           :key="header.text || index"
-          :class="{ bold: header.bold, 'no-break': header.noBreak, 
-          'align-left': header.align == 'left',
-          'align-right': header.align == 'right',
-          'align-center': header.align == 'center',
+          :class="{
+            bold: header.bold,
+            'no-break': header.noBreak,
+            'align-left': header.align == 'left',
+            'align-right': header.align == 'right',
+            'align-center': header.align == 'center',
           }"
         >
           <!-- if we want checkbox in the some column we need to add checkbox:true prop -->
@@ -326,7 +327,7 @@
 
           <!-- money display -->
           <template v-else-if="header.type == 'money'">
-            {{item.coin_suffix}}{{ getValue(item, header.value) | currency }}
+            {{ item.coin_suffix }}{{ getValue(item, header.value) | currency }}
           </template>
 
           <!-- regular display -->
@@ -340,21 +341,6 @@
     <template slot="no-data">
       <div>{{ empyDataMessage }}</div>
     </template>
-
-    <!-- <template v-slot:item.approved="{ item }">
-      <template v-if="item === true">
-        <v-icon color="green darken-2">check_circle</v-icon>
-      </template>
-      <template v-else-if="item.approved === false">
-        <v-icon color="red darken-2">cancel</v-icon>
-      </template>
-    </template> -->
-
-    <!-- <template v-slot:expand="props">
-      <v-card flat>
-        <v-card-text>{{ props }}</v-card-text>
-      </v-card>
-    </template> -->
   </v-data-table>
 </template>
 
@@ -462,14 +448,6 @@ export default Vue.extend({
 }
 .elevation-5 {
   margin: 20px 0px;
-}
-.button {
-  cursor: pointer;
-}
-.checkbox {
-  cursor: pointer;
-  width: 15px;
-  height: 15px;
 }
 .bold {
   font-weight: bold;

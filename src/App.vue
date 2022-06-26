@@ -76,5 +76,4 @@ nav {
 .hidden {
   display: none;
 }
-
 </style>

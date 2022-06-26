@@ -20,13 +20,17 @@ export default {
     button: {},
     addRow: {},
     itemsData: {},
-    extraHeaders: { type: Array, required: false, default: function () {
-      return []
-      }},
-    tableButtons: {}
+    extraHeaders: {
+      type: Array,
+      required: false,
+      default: function () {
+        return [];
+      },
+    },
+    tableButtons: {},
   },
   created() {
-    this.headers = [...this.extraHeaders, ...this.headersData]
+    this.headers = [...this.extraHeaders, ...this.headersData];
   },
   data() {
     return {

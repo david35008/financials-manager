@@ -17,7 +17,7 @@ try {
     serverProcess.stdout.on("data", console.log);
     serverProcess.stderr.on("data", console.error);
     // eslint-disable-next-line no-empty
-} catch (e) {}
+} catch (e) { }
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([

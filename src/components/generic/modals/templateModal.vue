@@ -44,70 +44,70 @@
 
 <script>
 export default {
-	name: "TemplateModal",
-	props: {
-		isOpen: { type: Boolean, required: false, default: true },
-		persistent: { type: Boolean, required: false },
-		width: { type: String, required: false, default: null },
-		unlimitedWidth: { type: Boolean, required: false },
-		disabled: { type: Boolean, required: false },
-		greyActionPanel: { type: Boolean, required: false },
-		greyBody: { type: Boolean, required: false },
-		greyHeader: { type: Boolean, required: false },
-	},
-	data() {
-		return {};
-	},
-	computed: {
-		widthComputed() {
-			if (this.unlimitedWidth) {
-				return undefined;
-			}
-			if (this.width) {
-				return this.width;
-			}
-			return "500px";
-		},
-		hasTitle() {
-			return !!this.$slots["title"];
-		},
-		hasPanelAction() {
-			return !!this.$slots["actions-button"];
-		},
-	},
-	methods: {
-		closeHandler() {
-			if (!this.persistent) {
-				this.$emit("close");
-			}
-		},
-		submitHandler() {
-			this.$emit("submit");
-		},
-	},
+  name: "TemplateModal",
+  props: {
+    isOpen: { type: Boolean, required: false, default: true },
+    persistent: { type: Boolean, required: false },
+    width: { type: String, required: false, default: null },
+    unlimitedWidth: { type: Boolean, required: false },
+    disabled: { type: Boolean, required: false },
+    greyActionPanel: { type: Boolean, required: false },
+    greyBody: { type: Boolean, required: false },
+    greyHeader: { type: Boolean, required: false },
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    widthComputed() {
+      if (this.unlimitedWidth) {
+        return undefined;
+      }
+      if (this.width) {
+        return this.width;
+      }
+      return "500px";
+    },
+    hasTitle() {
+      return !!this.$slots["title"];
+    },
+    hasPanelAction() {
+      return !!this.$slots["actions-button"];
+    },
+  },
+  methods: {
+    closeHandler() {
+      if (!this.persistent) {
+        this.$emit("close");
+      }
+    },
+    submitHandler() {
+      this.$emit("submit");
+    },
+  },
 };
 </script>
 
 <style lang="scss">
-$bgColor:var(--v-grey-lighter);
+$bgColor: var(--v-grey-lighter);
 .greyHeader {
-	.v-card__title {
-		background-color: $bgColor !important;
-	}
+  .v-card__title {
+    background-color: $bgColor !important;
+  }
 }
 .greyBody {
-	.v-card__text {
-		background-color: $bgColor !important;
-	}
+  .v-card__text {
+    background-color: $bgColor !important;
+  }
 }
 .greyActionPanel {
-	.v-card__actions {
-		background-color: $bgColor !important;
-	}
+  .v-card__actions {
+    background-color: $bgColor !important;
+  }
 }
 </style>
 <style lang="scss" scoped>
 .title {
-	word-break: break-word;
+  word-break: break-word;
 }
 </style>

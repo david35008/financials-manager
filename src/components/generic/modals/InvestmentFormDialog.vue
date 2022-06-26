@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" v-if="readyToRender">
-    <v-dialog :value="dialog" persistent max-width="400px">
+    <v-dialog :value="dialog" persistent max-width="800px">
       <v-form
         ref="form"
         v-model="valid"
@@ -14,6 +14,19 @@
           <v-card-text>
             <v-container>
               <v-row>
+                <v-col>
+                  <v-select
+                    reverse
+                    :items="investmentTypeOptions"
+                    label="סוג ההשקעה"
+                    no-data-text="לא קיימים סוגי השקעה במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="investmentType"
+                    required
+                    clearable
+                    :rules="required"
+                  />
+                </v-col>
                 <v-col>
                   <v-select
                     reverse
@@ -33,21 +46,6 @@
                 <v-col>
                   <v-select
                     reverse
-                    :items="investmentTypeOptions"
-                    label="סוג ההשקעה"
-                    no-data-text="לא קיימים סוגי השקעה במערכת, יש להוסיף תחילה"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    v-model="investmentType"
-                    required
-                    clearable
-                    :rules="required"
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-select
-                    reverse
                     :items="countriesOptions"
                     label="מדינה"
                     no-data-text="לא קיימות מדינות במערכת, יש להוסיף תחילה"
@@ -58,8 +56,6 @@
                     :rules="required"
                   />
                 </v-col>
-              </v-row>
-              <v-row>
                 <v-col>
                   <v-select
                     reverse
@@ -75,31 +71,18 @@
               </v-row>
               <v-row>
                 <v-col>
-                  <v-select
-                    reverse
-                    :items="coinsOptions"
-                    label="מטבע"
-                    no-data-text="לא קיימים מטבעות במערכת, יש להוסיף תחילה"
-                    :menu-props="{ bottom: true, offsetY: true }"
-                    v-model="coin"
-                    required
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <date-picker @dateChanged="dateChanged" :start-with="as_of_date" />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
                   <v-text-field
                     reverse
                     type="string"
                     label="סמל מזהה"
                     hint="הכנס את סמל המוצר בו אתה משקיע"
                     v-model="investmentTicker"
+                  />
+                </v-col>
+                <v-col>
+                  <date-picker
+                    @dateChanged="dateChanged"
+                    :start-with="as_of_date"
                   />
                 </v-col>
               </v-row>
@@ -110,10 +93,26 @@
                     type="number"
                     label="סכום בשקלים"
                     hint="הכנס את סכום ההשקעה"
-                    :suffix="this.coinsDict[this.coin] ? this.coinsDict[this.coin].suffix: ''"
+                    :suffix="
+                      this.coinsDict[this.coin]
+                        ? this.coinsDict[this.coin].suffix
+                        : ''
+                    "
                     v-model="investmentAmount"
                     required
                     :rules="required"
+                  />
+                </v-col>
+                <v-col>
+                  <v-select
+                    reverse
+                    :items="coinsOptions"
+                    label="מטבע"
+                    no-data-text="לא קיימים מטבעות במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="coin"
+                    required
+                    clearable
                   />
                 </v-col>
               </v-row>
@@ -139,7 +138,7 @@
 import DatePicker from "@/components/generic/modals/DatePicker";
 import { mapGetters } from "vuex";
 export default {
-  components: {DatePicker},
+  components: { DatePicker },
   props: {
     dialog: {
       type: Boolean,
@@ -148,21 +147,21 @@ export default {
         return false;
       },
     },
-    entityToEdit: {}
+    entityToEdit: {},
   },
   async created() {
     await this.fetchData();
- },
+  },
   watch: {
     entityToEdit: async function () {
-      this.investorId = this.entityToEdit.investor
-      this.investmentAmount = this.entityToEdit.amount
-      this.investmentType = this.entityToEdit.investments_type
-      this.investmentRoute = this.entityToEdit.investments_route
-      this.investmentTicker = this.entityToEdit.ticker
-      this.coin = this.entityToEdit.coin
-      this.country = this.entityToEdit.country
-      this.as_of_date = this.entityToEdit.as_of_date
+      this.investorId = this.entityToEdit.investor;
+      this.investmentAmount = this.entityToEdit.amount;
+      this.investmentType = this.entityToEdit.investments_type;
+      this.investmentRoute = this.entityToEdit.investments_route;
+      this.investmentTicker = this.entityToEdit.ticker;
+      this.coin = this.entityToEdit.coin;
+      this.country = this.entityToEdit.country;
+      this.as_of_date = this.entityToEdit.as_of_date;
     },
   },
   data() {
@@ -194,8 +193,8 @@ export default {
   },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
-    dateChanged(date){
-      this.as_of_date = date
+    dateChanged(date) {
+      this.as_of_date = date;
     },
     async fetchData() {
       await this.fetchInvestors();
@@ -225,7 +224,7 @@ export default {
     },
     async fetchCoins() {
       const { data } = await this.$network.get(this.rootURL + "/coin");
-      this.coinsDict = data
+      this.coinsDict = data;
       this.coinsOptions = this.dictToOptions(data);
       this.readyToRender = true;
     },
@@ -237,7 +236,7 @@ export default {
     async handleSubmit() {
       const valid = this.$refs.form.validate();
       if (!valid || !this.valid) return;
-      this.$emit('submitEntity', {
+      this.$emit("submitEntity", {
         institute: this.$route.params.id,
         investor: this.investorId,
         investments_type: this.investmentType,
@@ -247,7 +246,7 @@ export default {
         ticker: this.investmentTicker,
         country: this.country,
         as_of_date: new Date(this.as_of_date).getTime(),
-      })
+      });
     },
   },
 };
