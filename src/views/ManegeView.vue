@@ -230,10 +230,11 @@ export default {
         name: this.newEntity,
         ...this.extraFieldsState,
       });
-      await this.fetchData();
       this.newEntity = null;
       this.extraFieldsState = {};
       this.createDialog = false;
+      // await this.fetchData();
+      window.location.reload();
     },
     async submitEditEntity() {
       if (!this.editEntity) {
@@ -250,7 +251,8 @@ export default {
       this.editDialog = false;
       this.editEntity = {};
       this.extraFieldsState = {};
-      await this.fetchData();
+      // await this.fetchData();
+      window.location.reload();
     },
     async submitDeleteEntity() {
       if (!this.deleteEntity) {
@@ -263,7 +265,8 @@ export default {
       this.deleteDialog = false;
       this.deleteEntity = {};
       this.extraFieldsState = {};
-      await this.fetchData();
+      // await this.fetchData();
+      window.location.reload();
     },
   },
 };
