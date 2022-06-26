@@ -9,7 +9,7 @@ import { ModalService } from "./services/modal.service";
 import VueCurrencyFilter from "vue-currency-filter";
 
 Vue.use(VueCurrencyFilter, {
-  symbol: "₪",
+  // symbol: "₪",
   thousandsSeparator: ",",
   fractionCount: 0,
   fractionSeparator: ",",

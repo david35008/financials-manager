@@ -57,12 +57,25 @@
               </v-row>
               <v-row>
                 <v-col>
+                  <v-select
+                    reverse
+                    :items="coinsOptions"
+                    label="מטבע"
+                    no-data-text="לא קיימים מטבעות במערכת, יש להוסיף תחילה"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    v-model="coin"
+                    required
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
                   <v-text-field
                     reverse
                     type="number"
                     label="סכום בשקלים"
                     hint="הכנס את סכום ההשקעה"
-                    suffix="₪"
+                    :suffix="this.coinsDict[this.coin] ? this.coinsDict[this.coin].suffix: ''"
                     v-model="investmentAmount"
                     required
                     :rules="required"
@@ -116,10 +129,13 @@ export default {
       investmentAmount: 0,
       investmentType: null,
       investmentRoute: null,
+      coin: null,
       valid: false,
       investorsOptions: [],
       investmentTypeOptions: [],
       investmentRouteOptions: [],
+      coinsOptions: [],
+      coinsDict: {},
     };
   },
   computed: mapGetters(["tabelsConfig"]),
@@ -128,6 +144,7 @@ export default {
       await this.fetchInvestors();
       await this.fetchInvestmentTypes();
       await this.fetchInvestmentRoutes();
+      await this.fetchCoins();
     },
     async fetchInvestors() {
       const { data } = await this.$network.get(this.rootURL + "/investor");
@@ -148,6 +165,12 @@ export default {
       this.investmentRouteOptions = this.dictToOptions(data);
       this.readyToRender = true;
     },
+    async fetchCoins() {
+      const { data } = await this.$network.get(this.rootURL + "/coin");
+      this.coinsDict = data
+      this.coinsOptions = this.dictToOptions(data);
+      this.readyToRender = true;
+    },
     async handleSubmit() {
       this.$refs.form.validate();
       if (!this.valid) return;
@@ -156,6 +179,7 @@ export default {
         investor: this.investorId,
         investments_type: this.investmentType,
         investments_route: this.investmentRoute,
+        coin: this.coin,
         amount: this.investmentAmount,
       });
       this.$emit("closeModal");

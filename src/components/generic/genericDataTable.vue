@@ -326,7 +326,7 @@
 
           <!-- money display -->
           <template v-else-if="header.type == 'money'">
-            {{ getValue(item, header.value) | currency }}
+            {{item.coin_suffix}}{{ getValue(item, header.value) | currency }}
           </template>
 
           <!-- regular display -->

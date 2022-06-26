@@ -40,7 +40,7 @@ export default {
           value: "amount",
           align: "right",
           sortable: false,
-          suffix: "₪",
+          // suffix: "₪",
           type: "money",
         },
         {
