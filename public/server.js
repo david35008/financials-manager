@@ -168,9 +168,10 @@ async function CreateEntry(table, newData) {
 
 async function UpdateEntry(table, id, updatedData) {
     const db = await readDb()
+    updatedData = {...db[table][id], ...updatedData, 'updated_at': now()};
     db[table][id] = updatedData;
     await writeDb(db)
-    return { id, ...updatedData, updated_at: now() }
+    return { id, ...updatedData }
 }
 
 async function DeleteEntry(table, id) {
@@ -249,8 +250,8 @@ app.post("/api/institute", async (req, res) => {
 
 app.put("/api/institute/:id", async (req, res) => {
     const { id } = req.params;
-    const { instituteName } = req.body;
-    const instituteData = await UpdateEntry(INSTITUTES, id, { name: instituteName });
+    const { name } = req.body;
+    const instituteData = await UpdateEntry(INSTITUTES, id, { name });
     res.json(instituteData);
 });
 
@@ -401,8 +402,8 @@ app.post("/api/coin", async (req, res) => {
 
 app.put("/api/coin/:id", async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
-    const coinsData = await UpdateEntry(COINS, id, { name });
+    const { name, suffix } = req.body;
+    const coinsData = await UpdateEntry(COINS, id, { name, suffix });
     res.json(coinsData);
 });
 
