@@ -140,7 +140,7 @@ function formatEntryDates(entry) {
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i]
         if (entry[key]) {
-            entry[key] = new Date(entry[key]).toDateString()
+            entry[key] = new Date(entry[key]).toLocaleString()
         }
     }
 }
