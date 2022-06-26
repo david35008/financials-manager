@@ -33,8 +33,8 @@
 
       <v-menu bottom left>
         <template v-slot:activator="{ on, tabelsConfig }">
-          <v-btn icon color="yellow" v-bind="tabelsConfig" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
+          <v-btn color="transport" v-bind="tabelsConfig" v-on="on">
+            אפשרויות
           </v-btn>
         </template>
 
