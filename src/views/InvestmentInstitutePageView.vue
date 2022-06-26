@@ -105,7 +105,6 @@ export default {
       this.editDialog = true;
     },
     async deleteRow(data) {
-      console.log("delete", data);
       this.deleteEntity = data;
       this.deleteDialog = true;
     },

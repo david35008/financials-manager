@@ -41,14 +41,15 @@
       </v-menu>
 
       <template v-slot:extension>
-        <v-tabs right>
+        <v-tabs optional right :value="indexOfTab($route.path)">
+          <v-tabs-slider></v-tabs-slider>
           <v-tab
-            v-for="(dict, path) in tabelsConfig"
-            :key="'tab' + path"
-            :id="'tab' + path"
-            @click="goTo(path)"
+            v-for="tab in tabs"
+            :key="'tab' + tab.path"
+            :id="'tab' + tab.path"
+            @click="goTo(`/${tab.path}`)"
           >
-            {{ dict.name }}</v-tab
+            {{ tab.name }}</v-tab
           >
         </v-tabs>
       </template>
@@ -73,9 +74,27 @@ export default {
       "ניהול מדינות": "manageCountries",
     },
   }),
-  computed: mapGetters(["tabelsConfig"]),
+  computed: {
+    ...mapGetters(["tabelsConfig"]),
+    tabs() {
+     const respTabs = []
+     for (const [path, dict] of Object.entries(this.tabelsConfig)) {
+       respTabs.push({...dict, path})
+     }
+     return respTabs
+    }
+  },
   methods: {
     ...mapActions(["setTabelsConfig"]),
+    indexOfTab(tabPath) {
+      const tabTOSearch = tabPath.replace('/', '')
+      const tabsIterate = this.tabs
+      for (let i = 0; i < tabsIterate.length; i++) {
+        if(tabsIterate[i].path == tabTOSearch) {
+          return i
+        }
+      }
+    },
     async goTo(path) {
       if (this.$router.history.current.path === path) return;
       await this.$router.push(path);
