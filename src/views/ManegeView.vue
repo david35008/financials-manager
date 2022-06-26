@@ -234,7 +234,7 @@ export default {
       this.extraFieldsState = {};
       this.createDialog = false;
       // await this.fetchData();
-      window.location.reload();
+      window.location.reload()
     },
     async submitEditEntity() {
       if (!this.editEntity) {
@@ -266,7 +266,7 @@ export default {
       this.deleteEntity = {};
       this.extraFieldsState = {};
       // await this.fetchData();
-      window.location.reload();
+      window.location.reload()
     },
   },
 };

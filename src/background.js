@@ -46,6 +46,12 @@ async function createWindow() {
         createProtocol("app");
         // Load the index.html when not in development
         win.loadURL("app://./index.html");
+        win.webContents.on('did-fail-load', () => {
+            if (process.env.NODE_ENV === 'production') {
+                // Load the index URL the same way you load it above
+                win.loadURL('app://./index.html')
+            }
+        })
     }
 }
 
