@@ -8,6 +8,16 @@
     :sort-desc="reverseSort"
     :items-per-page="computedDisplayAll"
   >
+<!--    <template v-for="(col, i) in filters" #[`header.${i}`]="{ header }">-->
+<!--      <table-header-filter-->
+<!--          :key="`filter-${i}`"-->
+<!--          :header="header"-->
+<!--          :filters="filters[header.value]"-->
+<!--          :active-filters="activeFilters[header.value]"-->
+<!--          :items="computedItems"-->
+<!--          @update="updateFilter($event, header.value)"-->
+<!--      />-->
+<!--    </template>-->
     <template v-if="tableTitle || ifToSearch || button" #top>
       <v-toolbar flat>
         <template v-if="tableTitle">
