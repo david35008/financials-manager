@@ -2,10 +2,12 @@
   <genericDataTable
     :headers="headers"
     :info="itemsData"
-    :insert-dialog="true"
     :button="button"
+    :icons-button="tableButtons"
     displayAll
     @topButtonClick="addRow"
+    @editRow="$emit('editRow', $event)"
+    @deleteRow="$emit('deleteRow', $event)"
   />
 </template>
 <script>
@@ -18,10 +20,18 @@ export default {
     button: {},
     addRow: {},
     itemsData: {},
+    extraHeaders: { type: Array, required: false, default: function () {
+      return []
+      }},
+    tableButtons: {}
+  },
+  created() {
+    this.headers = [...this.extraHeaders, ...this.headersData]
   },
   data() {
     return {
-      headers: [
+      headers: [],
+      headersData: [
         {
           text: "נוצר",
           value: "created_at",
@@ -71,6 +81,12 @@ export default {
         {
           text: "שם בעל ההשקעה",
           value: "investor_name",
+          align: "right",
+          sortable: true,
+        },
+        {
+          text: "מספר השקעה",
+          value: "id",
           align: "right",
           sortable: true,
         },

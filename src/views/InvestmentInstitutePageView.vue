@@ -1,33 +1,81 @@
 <template>
   <v-container class="container" v-if="readyToRender">
-    <formDialog :dialog="dialog" @closeModal="refreshData" />
+    <investment-form-dialog :dialog="createDialog" @submitEntity="submitCreateEntity" @closeModal="createDialog=false" />
+    <investment-form-dialog :dialog="editDialog" @submitEntity="submitEditEntity" @closeModal="editDialog=false" :entity-to-edit="editEntity" />
+    <v-dialog :value="deleteDialog" persistent max-width="500">
+    <v-card>
+      <v-card-text
+      >? "האם אתה בטוח שברצונך למחוק את השקעה מספר "{{
+          deleteEntity.id
+        }}</v-card-text
+      >
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" text @click="deleteDialog = false"
+        >ביטול</v-btn
+        >
+        <v-btn color="red darken-1" text @click="submitDeleteEntity"
+        >אישור</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
     <v-divider />
     <v-spacer />
     <h1>{{ title }}</h1>
-    <InvestmentTable
+    <investment-table
       :add-row="addRow"
       :items-data="itemsData"
       :button="{ text: 'הוסף השקעה' }"
+      :extra-headers="extraHeaders"
+      :table-buttons="tableButtons"
+      @editRow="editRow"
+      @deleteRow="deleteRow"
     />
   </v-container>
-  <GlobalLoader v-else />
+  <global-loader v-else />
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import formDialog from "../components/generic/modals/AddInvestmentFormDialog.vue";
+import investmentFormDialog from "../components/generic/modals/InvestmentFormDialog.vue";
 import InvestmentTable from "@/views/InvestmentTable";
 
 export default {
   name: "Page-View",
   components: {
     InvestmentTable,
-    formDialog,
+    investmentFormDialog,
   },
   data: () => ({
-    dialog: false,
+    createDialog: false,
+    editDialog: false,
+    deleteDialog: false,
+    editEntity: {},
+    deleteEntity: {},
     readyToRender: false,
     itemsData: null,
+    apiRoute: 'investment',
+    extraHeaders: [
+      {
+        value: "actions",
+        sortable: false,
+      },
+    ],
+    tableButtons: [
+      {
+        text: "mdi-trash-can",
+        eventName: "deleteRow",
+        color: "red",
+        tooltip: "מחיקה",
+      },
+      {
+        text: "mdi-pencil",
+        eventName: "editRow",
+        color: "green",
+        tooltip: "עריכה",
+      },
+    ],
   }),
   async created() {
     await this.fetchData();
@@ -41,11 +89,16 @@ export default {
   methods: {
     ...mapActions(["setTabelsConfig"]),
     addRow() {
-      this.dialog = true;
+      this.createDialog = true;
     },
-    async refreshData() {
-      await this.fetchData();
-      this.dialog = false;
+    async editRow(data) {
+      this.editEntity = data;
+      this.editDialog = true;
+    },
+    async deleteRow(data) {
+      console.log('delete', data)
+      this.deleteEntity = data;
+      this.deleteDialog = true;
     },
     async fetchData() {
       this.resetData();
@@ -60,6 +113,36 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    async submitCreateEntity(newEntity) {
+      if (!newEntity) {
+        this.createDialog = false;
+        return;
+      }
+      await this.$network.post(this.rootURL + `/${this.apiRoute}`, newEntity);
+      await this.fetchData();
+      this.newEntity = {}
+      this.createDialog = false;
+    },
+    async submitEditEntity(editedEntity) {
+      if (!editedEntity) {
+        this.editDialog = false;
+        return;
+      }
+      await this.$network.put(this.rootURL + `/${this.apiRoute}/${this.editEntity.id}`, editedEntity);
+      this.editDialog = false;
+      this.editEntity = {};
+      await this.fetchData();
+    },
+    async submitDeleteEntity() {
+      if (!this.deleteEntity) {
+        this.deleteDialog = false;
+        return;
+      }
+      await this.$network.delete(this.rootURL + `/${this.apiRoute}/${this.deleteEntity.id}`);
+      this.deleteDialog = false;
+      this.deleteEntity = {};
+      await this.fetchData();
     },
   },
 };

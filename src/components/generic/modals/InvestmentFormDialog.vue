@@ -23,6 +23,7 @@
                     no-data-text="לא קיימים בעלי חשבון במערכת, יש להוסיף תחילה"
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="investorId"
+                    clearable
                     required
                     :rules="required"
                   />
@@ -38,6 +39,7 @@
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="investmentType"
                     required
+                    clearable
                     :rules="required"
                   />
                 </v-col>
@@ -52,6 +54,7 @@
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="country"
                     required
+                    clearable
                     :rules="required"
                   />
                 </v-col>
@@ -66,6 +69,7 @@
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="investmentRoute"
                     required
+                    clearable
                   />
                 </v-col>
               </v-row>
@@ -79,6 +83,7 @@
                     :menu-props="{ bottom: true, offsetY: true }"
                     v-model="coin"
                     required
+                    clearable
                   />
                 </v-col>
               </v-row>
@@ -136,9 +141,21 @@ export default {
         return false;
       },
     },
+    entityToEdit: {}
   },
   async created() {
     await this.fetchData();
+ },
+  watch: {
+    entityToEdit: async function () {
+      this.investorId = this.entityToEdit.investor
+      this.investmentAmount = this.entityToEdit.amount
+      this.investmentType = this.entityToEdit.investments_type
+      this.investmentRoute = this.entityToEdit.investments_route
+      this.investmentTicker = this.entityToEdit.ticker
+      this.coin = this.entityToEdit.coin
+      this.country = this.entityToEdit.country
+    },
   },
   data() {
     return {
@@ -151,7 +168,7 @@ export default {
         },
       ],
       investorId: null,
-      investmentAmount: 0,
+      investmentAmount: null,
       investmentType: null,
       investmentRoute: null,
       investmentTicker: null,
@@ -206,9 +223,9 @@ export default {
       this.readyToRender = true;
     },
     async handleSubmit() {
-      this.$refs.form.validate();
-      if (!this.valid) return;
-      await this.$network.post(this.rootURL + `/investment`, {
+      const valid = this.$refs.form.validate();
+      if (!valid || !this.valid) return;
+      this.$emit('submitEntity', {
         institute: this.$route.params.id,
         investor: this.investorId,
         investments_type: this.investmentType,
@@ -217,8 +234,7 @@ export default {
         amount: this.investmentAmount,
         ticker: this.investmentTicker,
         country: this.country,
-      });
-      this.$emit("closeModal");
+      })
     },
   },
 };

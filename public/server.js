@@ -556,6 +556,33 @@ app.post("/api/investment", async (req, res) => {
     res.json(investmentsData);
 });
 
+app.put("/api/investment/:id", async (req, res) => {
+    const { id } = req.params;
+    const { institute, investor, investments_type, investments_route,
+            amount, coin, ticker, country, as_of_date } = req.body;
+    const investmentsData = await UpdateEntry(INVESTMENTS, id, {
+        institute,
+        investor,
+        investments_type,
+        investments_route,
+        coin,
+        ticker,
+        country,
+        as_of_date: as_of_date || now(),
+        amount: parseFloat(amount)
+    });
+    res.json(investmentsData);
+});
+
+app.delete("/api/investment/:id", async (req, res) => {
+    const { id } = req.params;
+    const resp = await DeleteEntry(INVESTMENTS, id);
+    if (resp) {
+        return res.status(204).send("Delete successfully");
+    }
+    return res.status(404).json({ message: `Investments "${id}" Not Found` });
+});
+
 app.get("/api/investment/money-sum", async (req, res) => {
     const investmentsData = await ListTable(INVESTMENTS)
     let moneySum = 0

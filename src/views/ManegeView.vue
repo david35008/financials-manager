@@ -81,8 +81,8 @@
       :button="{ text: `הוספת ${managetitle}` }"
       :icons-button="tableButtons"
       @topButtonClick="addRow"
-      @deleteRow="deleteRow"
       @editRow="editRow"
+      @deleteRow="deleteRow"
     />
   </v-container>
   <GlobalLoader v-else />
