@@ -678,6 +678,38 @@ app.get("/api/investment/sum-by-coin/:coinId", async (req, res) => {
     return res.json(moneySum);
 });
 
+app.get("/api/investment/by-country", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+    const countries = await modelToConfig(COUNTRIES)
+
+    const countriesNames = Object.values(countries)
+    const investmentByCountry = {}
+
+    for (const investment of Object.values(investments)) {
+        if(!investment.country) continue
+        const countryName = countries[investment.country]
+        if (!investmentByCountry[countryName]) {
+            investmentByCountry[countryName] = {}
+        }
+
+        const country = investmentByCountry[countryName]
+        const coinName = coins[investment.coin]
+
+        if (!country[coinName]) {
+            country[coinName] = 0
+        }
+
+        country[coinName] += investment.amount
+    }
+
+    const respCountry = {
+        labels: countriesNames,
+        data: investmentByCountry
+    }
+    return res.json(respCountry);
+});
+
 app.get("/api/investment/by-country/:countryId", async (req, res) => {
     const { countryId } = req.params;
     const countryData = await getCountryInvestments(countryId);
@@ -685,6 +717,37 @@ app.get("/api/investment/by-country/:countryId", async (req, res) => {
         await fetchRelated(countryData[i]);
     }
     return res.json(countryData);
+});
+
+app.get("/api/investment/by-ticker", async (req, res) => {
+    const investments = await ListTable(INVESTMENTS)
+    const coins = await modelToConfig(COINS)
+
+    const investmentByTicker = {}
+    const labels = []
+    for (const investment of Object.values(investments)) {
+        if(!investment.ticker) continue
+        const tickerName = investment.ticker
+        if (!investmentByTicker[tickerName]) {
+            labels.push(tickerName)
+            investmentByTicker[tickerName] = {}
+        }
+
+        const ticker = investmentByTicker[tickerName]
+        const coinName = coins[investment.coin]
+
+        if (!ticker[coinName]) {
+            ticker[coinName] = 0
+        }
+
+        ticker[coinName] += investment.amount
+    }
+
+    const respCountry = {
+        labels,
+        data: investmentByTicker
+    }
+    return res.json(respCountry);
 });
 
 app.post("/api/investment", async (req, res) => {

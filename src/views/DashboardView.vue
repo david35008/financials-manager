@@ -40,6 +40,20 @@
             chart-title="סכום כספים לפי מסלול השקעה"
         ></bar-chart>
       </v-col>
+      <v-col md="4">
+        <bar-chart
+            :data="investmentsByCountry.data"
+            :labels="investmentsByCountry.labels"
+            chart-title="סכום כספים לפי מדינה"
+        ></bar-chart>
+      </v-col>
+      <v-col md="4">
+        <bar-chart
+            :data="investmentsByTicker.data"
+            :labels="investmentsByTicker.labels"
+            chart-title="סכום כספים לפי סמל מזהה"
+        ></bar-chart>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -63,6 +77,8 @@ export default {
     investmentsByInvestor: {},
     investmentsByInvestmentTypes: {},
     investmentsByInvestmentRoutes: {},
+    investmentsByCountry: {},
+    investmentsByTicker: {},
   }),
   methods: {
     ...mapActions(["setTabelsConfig"]),
@@ -94,6 +110,18 @@ export default {
       );
       this.investmentsByInvestmentRoutes = data;
     },
+    async fetchInvestmentsByCountry() {
+      const { data } = await this.$network.get(
+          this.rootURL + `/investment/by-country`
+      );
+      this.investmentsByCountry = data;
+    },
+    async fetchInvestmentsByTicker() {
+      const { data } = await this.$network.get(
+          this.rootURL + `/investment/by-ticker`
+      );
+      this.investmentsByTicker = data;
+    },
     async fetchData() {
       this.resetData();
       await this.fetchCoins();
@@ -101,6 +129,8 @@ export default {
       await this.fetchInvestmentsByInvestor();
       await this.fetchInvestmentsByInvestmentTypes();
       await this.fetchInvestmentsByInvestmentRoutes();
+      await this.fetchInvestmentsByCountry();
+      await this.fetchInvestmentsByTicker();
       this.readyToRender = true;
     },
   },
