@@ -89,6 +89,11 @@
               </v-row>
               <v-row>
                 <v-col>
+                  <date-picker @dateChanged="dateChanged" :start-with="as_of_date" />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
                   <v-text-field
                     reverse
                     type="string"
@@ -131,8 +136,10 @@
 </template>
 
 <script>
+import DatePicker from "@/components/generic/modals/DatePicker";
 import { mapGetters } from "vuex";
 export default {
+  components: {DatePicker},
   props: {
     dialog: {
       type: Boolean,
@@ -155,6 +162,7 @@ export default {
       this.investmentTicker = this.entityToEdit.ticker
       this.coin = this.entityToEdit.coin
       this.country = this.entityToEdit.country
+      this.as_of_date = this.entityToEdit.as_of_date
     },
   },
   data() {
@@ -174,6 +182,7 @@ export default {
       investmentTicker: null,
       coin: null,
       country: null,
+      as_of_date: null,
       valid: false,
       investorsOptions: [],
       investmentTypeOptions: [],
@@ -185,6 +194,9 @@ export default {
   },
   computed: mapGetters(["tabelsConfig"]),
   methods: {
+    dateChanged(date){
+      this.as_of_date = date
+    },
     async fetchData() {
       await this.fetchInvestors();
       await this.fetchInvestmentTypes();
@@ -234,6 +246,7 @@ export default {
         amount: this.investmentAmount,
         ticker: this.investmentTicker,
         country: this.country,
+        as_of_date: new Date(this.as_of_date).getTime(),
       })
     },
   },

@@ -136,13 +136,14 @@ async function ListTable(table) {
 }
 
 function formatEntryDates(entry) {
-    let keys = ['created_at', 'updated_at', 'as_of_date'];
+    let keys = ['created_at', 'updated_at'];
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i]
         if (entry[key]) {
             entry[key] = new Date(entry[key]).toLocaleString()
         }
     }
+    entry['as_of_date_view'] = new Date(entry['as_of_date']).toLocaleString()
 }
 
 async function GetEntry(table, id) {

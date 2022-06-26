@@ -33,14 +33,8 @@ export default {
       headers: [],
       headersData: [
         {
-          text: "נוצר",
-          value: "created_at",
-          align: "right",
-          sortable: true,
-        },
-        {
-          text: "עדכון אחרון",
-          value: "updated_at",
+          text: "נכון לתאריך",
+          value: "as_of_date_view",
           align: "right",
           sortable: true,
           formatting: { type: "filter", key: "formatDate" },
