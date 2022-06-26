@@ -19,12 +19,7 @@ export default {
     readyToRender: false,
   }),
   async created() {
-    try {
-      await this.$network.get(this.rootURL + "/start");
-    } catch (error) {
-      console.error(error);
-      alert("Init System Error");
-    }
+    await this.$network.get(this.rootURL + "/start");
     await this.fetchTableNames();
   },
   methods: {

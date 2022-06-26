@@ -111,17 +111,13 @@ export default {
     },
     async fetchData() {
       this.resetData();
-      try {
-        const { data } = await this.$network.get(
-          this.rootURL + `/investment/by-institute/${this.$route.params.id}`
-        );
-        const formatedItems = this.formatItems(data);
-        this.itemsData = formatedItems;
-        await this.fetchTableNames();
-        this.readyToRender = true;
-      } catch (error) {
-        console.error(error);
-      }
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/by-institute/${this.$route.params.id}`
+      );
+      const formatedItems = this.formatItems(data);
+      this.itemsData = formatedItems;
+      await this.fetchTableNames();
+      this.readyToRender = true;
     },
     async submitCreateEntity(newEntity) {
       if (!newEntity) {

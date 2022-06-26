@@ -20,14 +20,9 @@ export default {
   },
   methods: {
     async fetchTableNames() {
-      try {
-        const { data } = await this.$network.get(this.rootURL + "/institute");
-        this.setTabelsConfig({ ...data, 0: { name: "סה\"כ" } });
-        this.readyToRender = true;
-      } catch (error) {
-        alert("DataBase Error");
-        console.error(error);
-      }
+      const { data } = await this.$network.get(this.rootURL + "/institute");
+      this.setTabelsConfig({ ...data, 0: { name: "סה\"כ" } });
+      this.readyToRender = true;
     },
     isNullOrUndefined(value) {
       return value === undefined || value === null;

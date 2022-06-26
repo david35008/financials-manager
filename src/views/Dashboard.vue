@@ -35,23 +35,15 @@ export default {
   methods: {
     ...mapActions(["setTabelsConfig"]),
     async fetchAllInvestments() {
-      try {
-        const { data } = await this.$network.get(this.rootURL + `/investment/`);
-        const formatedItems = this.formatItems(data);
-        this.itemsData = formatedItems;
-      } catch (error) {
-        console.error(error);
-      }
+      const { data } = await this.$network.get(this.rootURL + `/investment/`);
+      const formatedItems = this.formatItems(data);
+      this.itemsData = formatedItems;
     },
     async fetchInvestmentsSum() {
-      try {
-        const { data } = await this.$network.get(
-          this.rootURL + `/investment/money-sum`
-        );
-        this.investmentsMoneySum = data;
-      } catch (error) {
-        console.error(error);
-      }
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/money-sum`
+      );
+      this.investmentsMoneySum = data;
     },
     async fetchData() {
       this.resetData();
