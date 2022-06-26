@@ -59,7 +59,7 @@ const routes = [
   {
     path: '/manageInvestmentInstitutes',
     name: 'Manage Institutes',
-    props: { managetitle: "בתי השקעה", apiRoute: "institute" },
+    props: { managetitle: "בתי השקעה", apiRoute: "institute", hardReload: true },
     component: ManageView,
     meta: { isPublic: true, title: "Manage Institutes" },
   },

@@ -106,6 +106,7 @@ export default {
         return [];
       },
     },
+    hardReload:{}
   },
   data: () => ({
     createDialog: false,
@@ -198,6 +199,13 @@ export default {
       this.deleteEntity = data;
       this.deleteDialog = true;
     },
+    async reloadData(){
+        if(this.hardReload) {
+          window.location.reload()
+        } else {
+          await this.fetchData();
+        }
+    },
     async fetchData() {
       this.resetData();
       const { data } = await this.$network.get(
@@ -233,8 +241,7 @@ export default {
       this.newEntity = null;
       this.extraFieldsState = {};
       this.createDialog = false;
-      // await this.fetchData();
-      window.location.reload()
+      await this.reloadData();
     },
     async submitEditEntity() {
       if (!this.editEntity) {
@@ -251,8 +258,7 @@ export default {
       this.editDialog = false;
       this.editEntity = {};
       this.extraFieldsState = {};
-      // await this.fetchData();
-      window.location.reload();
+      await this.reloadData();
     },
     async submitDeleteEntity() {
       if (!this.deleteEntity) {
@@ -265,8 +271,7 @@ export default {
       this.deleteDialog = false;
       this.deleteEntity = {};
       this.extraFieldsState = {};
-      // await this.fetchData();
-      window.location.reload()
+      await this.reloadData();
     },
   },
 };
