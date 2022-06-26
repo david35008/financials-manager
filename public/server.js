@@ -481,13 +481,14 @@ app.get("/api/investment/by-coin/:coinId", async (req, res) => {
 
 app.post("/api/investment", async (req, res) => {
     const { institute, investor, investments_type, investments_route,
-            amount, coin, as_of_date } = req.body;
+            amount, coin, ticker, as_of_date } = req.body;
     const investmentsData = await CreateEntry(INVESTMENTS, {
         institute,
         investor,
         investments_type,
         investments_route,
         coin,
+        ticker,
         as_of_date: as_of_date || now(),
         amount: parseFloat(amount)
     });

@@ -4,6 +4,7 @@
     :info="itemsData"
     :insert-dialog="true"
     :button="button"
+    displayAll
     @topButtonClick="addRow"
   />
 </template>
@@ -46,6 +47,12 @@ export default {
         {
           text: "מסלול ההשקעה",
           value: "investments_route_name",
+          align: "right",
+          sortable: true,
+        },
+        {
+          text: "סמל מזהה",
+          value: "ticker",
           align: "right",
           sortable: true,
         },

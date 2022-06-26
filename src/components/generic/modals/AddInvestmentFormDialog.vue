@@ -72,6 +72,17 @@
                 <v-col>
                   <v-text-field
                     reverse
+                    type="string"
+                    label="סמל מזהה"
+                    hint="הכנס את סמל המוצר בו אתה משקיע"
+                    v-model="investmentTicker"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    reverse
                     type="number"
                     label="סכום בשקלים"
                     hint="הכנס את סכום ההשקעה"
@@ -129,6 +140,7 @@ export default {
       investmentAmount: 0,
       investmentType: null,
       investmentRoute: null,
+      investmentTicker: null,
       coin: null,
       valid: false,
       investorsOptions: [],
@@ -181,6 +193,7 @@ export default {
         investments_route: this.investmentRoute,
         coin: this.coin,
         amount: this.investmentAmount,
+        ticker: this.investmentTicker,
       });
       this.$emit("closeModal");
     },
