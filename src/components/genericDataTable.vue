@@ -323,7 +323,7 @@
           </template>
 
           <!-- if the value is 'undefined'  -->
-          <template v-else-if="!item[header.value]"> - </template>
+          <template v-else-if="isNullOrUndefined(item[header.value])"> - </template>
 
           <!-- if the value is "true" we will show green icon -->
           <template v-else-if="item[header.value] === true">
@@ -436,11 +436,7 @@ export default Vue.extend({
       }
     },
     getValue(item, keys) {
-      if (typeof keys === "string") {
         return item[keys];
-      } else if (Array.isArray(keys)) {
-        return this.getValueByKeys(keys, item);
-      }
     },
   },
 });

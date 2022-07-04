@@ -14,7 +14,7 @@ Vue.use(VueCurrencyFilter, {
   fractionCount: 0,
   fractionSeparator: ",",
   symbolPosition: "front",
-  symbolSpacing: false,
+  symbolSpacing: true,
 });
 
 Vue.prototype.$ModalService = ModalService;
