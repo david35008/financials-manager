@@ -19,7 +19,7 @@
       <!--the hamburger option-->
       <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
-      <v-toolbar-title class="header-title">ריכוז השקעות</v-toolbar-title>
+      <v-toolbar-title class="header-title">ההשקעות שלי</v-toolbar-title>
 
       <v-spacer></v-spacer>
       <v-menu bottom left>
