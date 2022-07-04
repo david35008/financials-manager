@@ -151,7 +151,6 @@ export default {
         eventName: "deleteRow",
         color: "red",
         tooltip: "מחיקה",
-        class: "hidden",
       },
       {
         text: "mdi-pencil",
