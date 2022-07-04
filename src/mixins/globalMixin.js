@@ -28,6 +28,16 @@ export default {
       this.setTabelsConfig({ "allInvestments": { name: "ריכוז השקעות" }, "": { name: "תמונת מצב" }, ...data });
       this.readyToRender = true;
     },
+    isObject(element) {
+      if (element) {
+        return Object.getPrototypeOf(element) === Object.getPrototypeOf({}) && !Array.isArray(element);
+      }
+      return false
+    },
+    objectIsEmpty(obj) {
+      if (!this.isObject(obj)) return true
+      return Object.keys(obj).length === 0;
+    },
     isNullOrUndefined(value) {
       return value === undefined || value === null;
     },

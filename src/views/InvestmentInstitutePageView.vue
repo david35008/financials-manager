@@ -31,7 +31,20 @@
     </v-dialog>
     <v-divider />
     <v-spacer />
-    <h1>{{ title }}</h1>
+    <v-row class="start-page">
+      <v-col md="3">
+        <amountCard
+          :card-amounts="investmentSum"
+          :card-title="'סך הכספים בבית השקעה'"
+        />
+      </v-col>
+      <v-col md="1"></v-col>
+      <v-col md="4">
+        <h1>{{ title }}</h1>
+      </v-col>
+      <v-col md="1"></v-col>
+      <v-col md="1"> </v-col>
+    </v-row>
     <investment-table
       :add-row="addRow"
       :items-data="itemsData"
@@ -46,13 +59,15 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import investmentFormDialog from "../components/generic/modals/InvestmentFormDialog.vue";
 import InvestmentTable from "@/components/InvestmentTable";
+import AmountCard from "@/views/AmountCard";
 
 export default {
   name: "Page-View",
   components: {
+    AmountCard,
     InvestmentTable,
     investmentFormDialog,
   },
@@ -64,6 +79,7 @@ export default {
     deleteEntity: {},
     readyToRender: false,
     itemsData: null,
+    investmentSum: null,
     apiRoute: "investment",
     extraHeaders: [
       {
@@ -108,14 +124,22 @@ export default {
       this.deleteEntity = data;
       this.deleteDialog = true;
     },
-    async fetchData() {
-      this.resetData();
+    async fetchInvestments() {
       const { data } = await this.$network.get(
         this.rootURL + `/investment/by-institute/${this.$route.params.id}`
       );
-      const formatedItems = this.formatItems(data);
-      this.itemsData = formatedItems;
-      await this.fetchTableNames();
+      this.itemsData = this.formatItems(data);
+    },
+    async fetchSumData() {
+      const { data } = await this.$network.get(
+        this.rootURL + `/investment/sum-by-institute/${this.$route.params.id}`
+      );
+      this.investmentSum = data;
+    },
+    async fetchData() {
+      this.resetData();
+      await this.fetchInvestments();
+      await this.fetchSumData();
       this.readyToRender = true;
     },
     async submitCreateEntity(newEntity) {
@@ -157,3 +181,8 @@ export default {
 };
 </script>
 
+<style scoped>
+.start-page {
+  margin-top: 1%;
+}
+</style>
