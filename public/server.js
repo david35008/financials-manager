@@ -126,6 +126,11 @@ app.get("/api/reset-data-base", async (req, res) => {
     res.json(data);
 });
 
+async function GetTable(table) {
+    const db = await readDb()
+    return db[table] || {};
+}
+
 async function ListTable(table) {
     const db = await readDb()
     let tableResults = db[table] || {};
@@ -504,7 +509,7 @@ app.get("/api/investment/by-institute", async (req, res) => {
     const investmentByInstitute = {}
 
     for (const investment of Object.values(investments)) {
-        if(!investment.institute) continue
+        if (!investment.institute) continue
         const instituteName = institutes[investment.institute]
         if (!investmentByInstitute[instituteName]) {
             investmentByInstitute[instituteName] = {}
@@ -536,6 +541,21 @@ app.get("/api/investment/by-institute/:instituteId", async (req, res) => {
     return res.json(instituteData);
 });
 
+app.get("/api/investment/sum-by-institute/:instituteId", async (req, res) => {
+    const { instituteId } = req.params;
+    const instituteData = await getInstituteInvestments(instituteId);
+    const coins = await GetTable(COINS)
+    const moneySum = {}
+    for (const investment of instituteData) {
+        const coin = coins[investment.coin]
+        if (!moneySum[investment.coin]) {
+            moneySum[investment.coin] = { ...coin, amount: 0 }
+        }
+        moneySum[investment.coin].amount += investment.amount
+    }
+    return res.json(moneySum);
+});
+
 app.get("/api/investment/by-investor", async (req, res) => {
     const investments = await ListTable(INVESTMENTS)
     const coins = await modelToConfig(COINS)
@@ -545,7 +565,7 @@ app.get("/api/investment/by-investor", async (req, res) => {
     const investmentByInvestor = {}
 
     for (const investment of Object.values(investments)) {
-        if(!investment.investor) continue
+        if (!investment.investor) continue
         const investorName = investors[investment.investor]
         if (!investmentByInvestor[investorName]) {
             investmentByInvestor[investorName] = {}
@@ -586,7 +606,7 @@ app.get("/api/investment/by-investments-type", async (req, res) => {
     const investmentByInvestmentsType = {}
 
     for (const investment of Object.values(investments)) {
-        if(!investment.investments_type) continue
+        if (!investment.investments_type) continue
         const investmentsTypeName = investmentsTypes[investment.investments_type]
         if (!investmentByInvestmentsType[investmentsTypeName]) {
             investmentByInvestmentsType[investmentsTypeName] = {}
@@ -627,7 +647,7 @@ app.get("/api/investment/by-investments-route", async (req, res) => {
     const investmentByInvestmentsRoute = {}
 
     for (const investment of Object.values(investments)) {
-        if(!investment.investments_route) continue
+        if (!investment.investments_route) continue
         const investmentsRouteName = investmentsRoutes[investment.investments_route]
         if (!investmentByInvestmentsRoute[investmentsRouteName]) {
             investmentByInvestmentsRoute[investmentsRouteName] = {}
@@ -687,7 +707,7 @@ app.get("/api/investment/by-country", async (req, res) => {
     const investmentByCountry = {}
 
     for (const investment of Object.values(investments)) {
-        if(!investment.country) continue
+        if (!investment.country) continue
         const countryName = countries[investment.country]
         if (!investmentByCountry[countryName]) {
             investmentByCountry[countryName] = {}
@@ -726,7 +746,7 @@ app.get("/api/investment/by-ticker", async (req, res) => {
     const investmentByTicker = {}
     const labels = []
     for (const investment of Object.values(investments)) {
-        if(!investment.ticker) continue
+        if (!investment.ticker) continue
         const tickerName = investment.ticker
         if (!investmentByTicker[tickerName]) {
             labels.push(tickerName)
